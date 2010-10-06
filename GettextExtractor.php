@@ -29,6 +29,8 @@ class GettextExtractor
 {
     const LOG_FILE = '/extractor.log';
     const ESCAPE_CHARS = '"';
+    const OUTPUT_PO = 'PO';
+    const OUTPUT_POT = 'POT';
     /** @var resource */
     protected $logHandler;
     /** @var array */
@@ -36,21 +38,24 @@ class GettextExtractor
     /** @var array */
     protected $filters = array(
         'php' => array('PHP'),
-        'phtml'	=> array('PHP', 'NetteLatte')
+        'phtml'    => array('PHP', 'NetteLatte')
     );
     /** @var array */
     protected $comments = array(
-    	'Gettext keys exported by GettextExtractor'
+        'Gettext keys exported by GettextExtractor'
     );
     /** @var array */
     protected $meta = array(
-    	'Content-Type' => 'text/plain; charset=UTF-8',
-    	'Plural-Forms' => 'nplurals=2; plural=(n != 1);'
+        'Content-Type' => 'text/plain; charset=UTF-8',
+        'Plural-Forms' => 'nplurals=2; plural=(n != 1);'
     );
     /** @var array */
     protected $data = array();
     /** @var array */
     protected $filterStore = array();
+
+    /** @var string */
+    protected $outputMode = self::OUTPUT_PO;
     
     /**
      * Log setup
@@ -58,11 +63,11 @@ class GettextExtractor
      */
     public function __construct($logToFile = false)
     {
-    	if (is_string($logToFile)) { // custom log file
-    		$this->logHandler = fopen($logToFile, "w");
-    	} elseif ($logToFile) { // default log file
-        	$this->logHandler = fopen(dirname(__FILE__) . self::LOG_FILE, "w");
-    	}
+        if (is_string($logToFile)) { // custom log file
+            $this->logHandler = fopen($logToFile, "w");
+        } elseif ($logToFile) { // default log file
+            $this->logHandler = fopen(dirname(__FILE__) . self::LOG_FILE, "w");
+        }
     }
     
     /**
@@ -82,7 +87,7 @@ class GettextExtractor
         if (is_resource($this->logHandler)) {
             fwrite($this->logHandler, $message . "\n");
         } else {
-        	echo $message . "\n";
+            echo $message . "\n";
         }
     }
     
@@ -106,14 +111,14 @@ class GettextExtractor
      */
     public function scan($resource)
     {
-    	$this->inputFiles = array();
-    	if (!is_array($resource)) $resource = array($resource);
-    	foreach ($resource as $item) {
-    		$this->log("Scanning '$item'");
-    		$this->_scan($item);
-    	}
-    	$this->_extract($this->inputFiles);
-    	return $this;
+        $this->inputFiles = array();
+        if (!is_array($resource)) $resource = array($resource);
+        foreach ($resource as $item) {
+            $this->log("Scanning '$item'");
+            $this->_scan($item);
+        }
+        $this->_extract($this->inputFiles);
+        return $this;
     }
     
     /**
@@ -122,52 +127,52 @@ class GettextExtractor
      */
     protected function _scan($resource)
     {
-    	if (!is_dir($resource) && !is_file($resource)) {
-    		$this->throwException("Resource '$resource' is not a directory or file");
-    	}
-    	
-    	if (is_file($resource)) {
-    		$this->inputFiles[] = realpath($resource);
-    		return;
-    	}
-    	
-    	// It's a directory
-    	$resource = realpath($resource);
-		if (!$resource) return;
-		$iterator = dir($resource);
-		if (!$iterator) return;
-		
-		while (FALSE !== ($entry = $iterator->read())) {
-			if ($entry == '.' || $entry == '..') continue;
+        if (!is_dir($resource) && !is_file($resource)) {
+            $this->throwException("Resource '$resource' is not a directory or file");
+        }
+        
+        if (is_file($resource)) {
+            $this->inputFiles[] = realpath($resource);
+            return;
+        }
+        
+        // It's a directory
+        $resource = realpath($resource);
+        if (!$resource) return;
+        $iterator = dir($resource);
+        if (!$iterator) return;
+        
+        while (FALSE !== ($entry = $iterator->read())) {
+            if ($entry == '.' || $entry == '..') continue;
 
-			$path = $resource . '/' . $entry;
-			if (!is_readable($path)) continue;
+            $path = $resource . '/' . $entry;
+            if (!is_readable($path)) continue;
 
-			if (is_dir($path)) {
-				$this->_scan($path);
-				continue;
-			}
+            if (is_dir($path)) {
+                $this->_scan($path);
+                continue;
+            }
 
-			if (is_file($path)) {
-				$info = pathinfo($path);
-				if (!isset($this->filters[$info['extension']])) continue;
-				$this->inputFiles[] = realpath($path);
-			}
-		}
+            if (is_file($path)) {
+                $info = pathinfo($path);
+                if (!isset($this->filters[$info['extension']])) continue;
+                $this->inputFiles[] = realpath($path);
+            }
+        }
 
-		$iterator->close();
-    	
+        $iterator->close();
+        
     }
     
-	/**
-	 * Extracts gettext keys from input files
-	 * @param array $inputFiles
-	 * @return array
-	 */    
+    /**
+     * Extracts gettext keys from input files
+     * @param array $inputFiles
+     * @return array
+     */    
     protected function _extract($inputFiles)
     {
-    	$inputFiles = array_unique($inputFiles);
-    	foreach ($inputFiles as $inputFile)
+        $inputFiles = array_unique($inputFiles);
+        foreach ($inputFiles as $inputFile)
         {
             if (!file_exists($inputFile)) {
                 $this->throwException('ERROR: Invalid input file specified: ' . $inputFile);
@@ -232,9 +237,9 @@ class GettextExtractor
      */
     public function setFilter($extension, $filter)
     {
-    	if (isset($this->filters[$extension]) && in_array($filter, $this->filters[$extension])) return $this;
-    	$this->filters[$extension][] = $filter;
-    	return $this;
+        if (isset($this->filters[$extension]) && in_array($filter, $this->filters[$extension])) return $this;
+        $this->filters[$extension][] = $filter;
+        return $this;
     }
     
     /**
@@ -243,8 +248,8 @@ class GettextExtractor
      */
     public function removeAllFilters()
     {
-    	$this->filters = array();
-    	return $this;
+        $this->filters = array();
+        return $this;
     }
     
     /**
@@ -253,8 +258,8 @@ class GettextExtractor
      * @return GettextExtractor
      */
     public function addComment($value) {
-    	$this->comments[] = $value;
-    	return $this;
+        $this->comments[] = $value;
+        return $this;
     }
     
     /**
@@ -263,7 +268,7 @@ class GettextExtractor
      */
     public function getMeta($key)
     {
-    	return isset($this->meta[$key]) ? $this->meta[$key] : NULL;
+        return isset($this->meta[$key]) ? $this->meta[$key] : NULL;
     }
     
     /**
@@ -274,8 +279,8 @@ class GettextExtractor
      */
     public function setMeta($key, $value)
     {
-    	$this->meta[$key] = $value;
-    	return $this;
+        $this->meta[$key] = $value;
+        return $this;
     }
     
     /**
@@ -313,13 +318,13 @@ class GettextExtractor
     {
         $output = array();
         foreach ($this->comments as $comment) {
-        	$output[] = '# ' . $comment;
+            $output[] = '# ' . $comment;
         }
         $output[] = '# Created: ' . date('c');
         $output[] = 'msgid ""';
         $output[] = 'msgstr ""';
         foreach ($this->meta as $key => $value) {
-        	$output[] = '"' . $key . ': ' . $value . '\n"';
+            $output[] = '"' . $key . ': ' . $value . '\n"';
         }
         $output[] = '';
         
@@ -339,21 +344,47 @@ class GettextExtractor
             } else {
                 $output[] = 'msgstr "' . addslashes($key) . '"'; 
             }*/
-            $output[] = 'msgstr "' . $this->addSlashes($key) . '"';
+            
+            switch ($this->outputMode) {
+                case self::POT:
+                    $output[] = 'msgstr ""';
+                    break;
+                case self::PO:
+                    // fallthrough
+                default:
+                    $output[] = 'msgstr "' . $this->addSlashes($key) . '"';
+            }
+            
             $output[] = '';
         }
         
         return join("\n", $output);
     }
     
-	/**
-	 * Escape a sring not to break the gettext syntax
-	 * @param string $string
-	 * @return string
-	 */
-	public function addSlashes($string)
-	{
-		return addcslashes($string, self::ESCAPE_CHARS);
-	}
-	
+    /**
+     * Escape a sring not to break the gettext syntax
+     * @param string $string
+     * @return string
+     */
+    public function addSlashes($string)
+    {
+        return addcslashes($string, self::ESCAPE_CHARS);
+    }
+
+    /**
+     * Sets output mode.
+     * On OUTPUT_PO, english msgstrs will be generated,
+     *     on OUTPUT_POT, msgstrs will be empty
+     *
+     * @param string $outputMode
+     * @return string
+     */
+    public function setOutputMode($outputMode)
+    {
+        $this->outputMode = $outputMode;
+        return $this;
+    }
+
+
+    
 }
