@@ -22,7 +22,7 @@ if (version_compare(PHP_VERSION, '5.2.2', '<'))
  * GettextExtractor tool
  *
  * @author     Karel Klima
- * @copyright  Copyright (c) 2009 Karel Kl�ma
+ * @copyright  Copyright (c) 2009 Karel Klíma
  * @package    Nette Extras
  */    
 class GettextExtractor
@@ -346,10 +346,10 @@ class GettextExtractor
             }*/
             
             switch ($this->outputMode) {
-                case self::POT:
+                case self::OUTPUT_POT:
                     $output[] = 'msgstr ""';
                     break;
-                case self::PO:
+                case self::OUTUT_PO:
                     // fallthrough
                 default:
                     $output[] = 'msgstr "' . $this->addSlashes($key) . '"';
