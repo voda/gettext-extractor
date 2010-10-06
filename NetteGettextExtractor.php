@@ -47,7 +47,8 @@ class NetteGettextExtractor extends GettextExtractor
 		'addSelect' 	=> 2,
 		'addSubmit'		=> 2,
 		'addText'		=> 2,
-		'addTextArea' 	=> 2
+		'addTextArea' 	=> 2,
+		'skipFirst'		=> 1,
 	);
 	
 	/**
@@ -96,7 +97,8 @@ class NetteGettextExtractor extends GettextExtractor
 			->addFunction('addSelect', 2)
 			->addFunction('addSubmit', 2)
 			->addFunction('addText', 2)
-			->addFunction('addTextArea', 2);
+			->addFunction('addTextArea', 2)
+			->addFunction('skipFirst');
 			
 		return $this;
 	}
