@@ -349,7 +349,7 @@ class GettextExtractor
                 case self::OUTPUT_POT:
                     $output[] = 'msgstr ""';
                     break;
-                case self::OUTUT_PO:
+                case self::OUTPUT_PO:
                     // fallthrough
                 default:
                     $output[] = 'msgstr "' . $this->addSlashes($key) . '"';
