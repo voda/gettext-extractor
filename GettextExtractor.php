@@ -46,8 +46,13 @@ class GettextExtractor
     );
     /** @var array */
     protected $meta = array(
-        'Content-Type' => 'text/plain; charset=UTF-8',
-        'Plural-Forms' => 'nplurals=2; plural=(n != 1);'
+		"PO-Revision-Date" => "YEAR-MO-DA HO:MI+ZONE",
+		"Last-Translator" => "FULL NAME <EMAIL@ADDRESS>",
+		"Language-Team" => "LANGUAGE <LL@li.org>",
+		"MIME-Version" => "1.0",
+		"Content-Type" => "text/plain; charset=CHARSET",
+		"Content-Transfer-Encoding" => "8bit",
+		"Plural-Forms" => "nplurals=INTEGER; plural=EXPRESSION;"
     );
     /** @var array */
     protected $data = array();
@@ -320,9 +325,10 @@ class GettextExtractor
         foreach ($this->comments as $comment) {
             $output[] = '# ' . $comment;
         }
-        $output[] = '# Created: ' . date('c');
+		$output[] = '#, fuzzy';
         $output[] = 'msgid ""';
         $output[] = 'msgstr ""';
+		$output[] = '"POT-Creation-Date: '.date('c').'\n"';
         foreach ($this->meta as $key => $value) {
             $output[] = '"' . $key . ': ' . $value . '\n"';
         }
