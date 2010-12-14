@@ -33,8 +33,9 @@ abstract class AFilter {
      * @param $singular int
 	 * @param $plural int|null
 	 * @param $context int|null
+	 * @return AFilter
      */
-	protected  function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
+	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
 		if (!is_int($singular) || $singular <= 0) {
 			throw new InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
 		}
@@ -54,22 +55,28 @@ abstract class AFilter {
 			$function[$context] = iFilter::CONTEXT;
 		}
 		$this->functions[$functionName] = $function;
+		return $this;
     }
 
     /**
      * Excludes a function from the function list
 	 *
      * @param $functionName
+	 * @return AFilter
      */
-    protected function removeFunction($functionName) {
+    public function removeFunction($functionName) {
         unset($this->functions[$functionName]);
+		return $this;
     }
 
     /**
      * Excludes all functions from the function list
+	 *
+	 * @return AFilter
      */
-    protected function removeAllFunctions() {
+    public function removeAllFunctions() {
         $this->functions = array();
+		return $this;
     }
 
     /**

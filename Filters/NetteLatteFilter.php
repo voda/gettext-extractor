@@ -44,24 +44,25 @@ class NetteLatteFilter extends AFilter implements iFilter {
 	 * Mandatory work...
 	 */
 	public function __construct() {
-		$this->addPrefix('_');
-		$this->addPrefix('!_');
-		$this->addPrefix('_n', 1, 2);
-		$this->addPrefix('!_n', 1, 2);
-		$this->addPrefix('_p', 2, null, 1);
-		$this->addPrefix('!_p', 2, null, 1);
-		$this->addPrefix('_np', 2, 3, 1);
-		$this->addPrefix('!_np', 2, 3, 1);
+		$this->addFunction('_');
+		$this->addFunction('!_');
+		$this->addFunction('_n', 1, 2);
+		$this->addFunction('!_n', 1, 2);
+		$this->addFunction('_p', 2, null, 1);
+		$this->addFunction('!_p', 2, null, 1);
+		$this->addFunction('_np', 2, 3, 1);
+		$this->addFunction('!_np', 2, 3, 1);
 	}
 
 	/**
 	 * Includes a prefix to match in { }
+	 * Alias for AFilter::addFunction
 	 *
 	 * @param $prefix string
 	 * @param $singular int
 	 * @param $plural int|null
 	 * @param $context int|null
-	 * @return PHPFilter
+	 * @return NetteLatteFilter
 	 */
 	public function addPrefix($prefix, $singular = 1, $plural = null, $context = null) {
 		parent::addFunction($prefix, $singular, $plural, $context);
@@ -70,6 +71,7 @@ class NetteLatteFilter extends AFilter implements iFilter {
 
 	/**
 	 * Excludes a prefix from { }
+	 * Alias for AFilter::removeFunction
 	 *
 	 * @param string $prefix
 	 * @return NetteLatteFilter

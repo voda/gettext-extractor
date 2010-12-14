@@ -370,7 +370,7 @@ class GettextExtractor {
 	 * @param string $string
 	 * @return string
 	 */
-	public function addSlashes($string) {
+	protected function addSlashes($string) {
 		return addcslashes($string, self::ESCAPE_CHARS);
 	}
 

@@ -32,41 +32,6 @@ class PHPFilter extends AFilter implements iFilter {
 	}
 
 	/**
-	 * Includes a function to parse gettext phrases from
-	 *
-	 * @param $functionName string
-	 * @param $singular int
-	 * @param $plural int|null
-	 * @param $context int|null
-	 * @return PHPFilter
-	 */
-	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
-		parent::addFunction($functionName, $singular, $plural, $context);
-		return $this;
-	}
-
-	/**
-	 * Excludes a function from the function list
-	 *
-	 * @param $functionName
-	 * @return PHPFilter
-	 */
-	public function removeFunction($functionName) {
-		parent::removeFunction($functionName);
-		return $this;
-	}
-
-	/**
-	 * Excludes all functions from the function list
-	 *
-	 * @return PHPFilter
-	 */
-	public function removeAllFunctions() {
-		parent::removeAllFunctions();
-		return $this;
-	}
-
-	/**
 	 * Parses given file and returns found gettext phrases
 	 *
 	 * @param string $file
