@@ -15,84 +15,154 @@
  */
 
 require_once dirname(__FILE__) . '/iFilter.php';
+require_once dirname(__FILE__) . '/AFilter.php';
 
 /**
  * Filter to parse curly brackets syntax in Nette Framework templates
  * @author Karel Klíma
  * @copyright  Copyright (c) 2009 Karel Klíma
  */
-class NetteLatteFilter implements iFilter
-{
-    /** regex to match the curly brackets syntax */
-    const LATTE_REGEX = '#{(__PREFIXES__)("[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\')+(\|[a-z]+(:[a-z0-9]+)*)*}#u';
-    /** @var array */
-    protected $prefixes = array('!_', '_');
-    
-    /**
-     * Mandatory work...
-     */
-    public function __construct()
-    {
-        // Flips the array so we can use it more effectively
-        $this->prefixes = array_flip($this->prefixes);
-    }
-    
-    /**
-     * Includes a prefix to match in { }
-     * @param string $prefix
-     * @return NetteLatteFilter
-     */
-    public function addPrefix($prefix) {
-        $this->prefixes[$prefix] = TRUE;
-        return $this;
-    }
-    
-    /**
-     * Excludes a prefix from { }
-     * @param string $prefix
-     * @return NetteLatteFilter
-     */
-    public function removePrefix($prefix) {
-        unset($this->prefixes[$prefix]);
-        return $this;
-    }
+class NetteLatteFilter extends AFilter implements iFilter {
 
-    /**
-     * Removes backslashes from before primes and double primes in primed or double primed strings respectively
-     * @return string
-     */
-    public function fixEscaping($string)
-    {
-        $prime = substr($string, 0, 1);
-        $string = str_replace('\\' . $prime, $prime, $string);
+	/** @internal single & double quoted PHP string, from Nette\Templates\LatteFilter */
+	const RE_STRING = '\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"';
 
-        return $string;
-    }
-    
-    /**
-     * Parses given file and returns found gettext phrases
-     * @param string $file
-     * @return array
-     */
-    public function extract($file)
-    {
-        $pInfo = pathinfo($file);
-        if (!count($this->prefixes)) return;
-        $data = array();
-        // parse file by lines
-        foreach (file($file) as $line => $contents) {
-            $prefixes = join('|', array_keys($this->prefixes));
-            // match all {!_ ... } or {_ ... } tags if prefixes are "!_" and "_"
-            preg_match_all(str_replace('__PREFIXES__', $prefixes, self::LATTE_REGEX), $contents, $matches);
-            
-            if (empty($matches)) continue;
-            if (empty($matches[2])) continue;
-            
-            foreach ($matches[2] as $m) {
-                // strips trailing apostrophes or double quotes
-                $data[substr($this->fixEscaping($m), 1, -1)][] = $pInfo['basename'] . ':' . $line;
-            }
-        }
-        return $data;
-    }
+	/** @internal PHP identifier, from Nette\Templates\LatteFilter */
+	const RE_IDENTIFIER = '[_a-zA-Z\x7F-\xFF][_a-zA-Z0-9\x7F-\xFF]*';
+
+	const RE_MODIFIER = '\\|[^|}]+';
+
+	const RE_NUMBER = '\d+';
+
+	/** @link http://doc.nette.org/cs/rozsireni-lattefilter */
+	const RE_TAG = '\{(__MACRO__)\s*(__PARAM__)((?:,\s*__PARAM__)+)?(?:__MODIFIER__)*\}';
+
+	/** @var array */
+	protected $prefixes = array();
+
+	/**
+	 * Mandatory work...
+	 */
+	public function __construct() {
+		$this->addPrefix('_');
+		$this->addPrefix('!_');
+		$this->addPrefix('_n', 1, 2);
+		$this->addPrefix('!_n', 1, 2);
+		$this->addPrefix('_p', 2, null, 1);
+		$this->addPrefix('!_p', 2, null, 1);
+		$this->addPrefix('_np', 2, 3, 1);
+		$this->addPrefix('!_np', 2, 3, 1);
+	}
+
+	/**
+	 * Includes a prefix to match in { }
+	 *
+	 * @param $prefix string
+	 * @param $singular int
+	 * @param $plural int|null
+	 * @param $context int|null
+	 * @return PHPFilter
+	 */
+	public function addPrefix($prefix, $singular = 1, $plural = null, $context = null) {
+		parent::addFunction($prefix, $singular, $plural, $context);
+		return $this;
+	}
+
+	/**
+	 * Excludes a prefix from { }
+	 *
+	 * @param string $prefix
+	 * @return NetteLatteFilter
+	 */
+	public function removePrefix($prefix) {
+		parent::removeFunction($prefix);
+		return $this;
+	}
+
+	/**
+	 * Parses given file and returns found gettext phrases
+	 *
+	 * @param string $file
+	 * @return array
+	 */
+	public function extract($file) {
+		if (count($this->functions) === 0)
+			return;
+		$data = array();
+
+		$regex = $this->createRegex(array_keys($this->functions));
+		$paramsRegex = '/,\s*(__PARAM__)/';
+		$paramsRegex = str_replace('__PARAM__', $this->createRegexForParam(), $paramsRegex);
+
+		// parse file by lines
+		foreach (file($file) as $line => $contents) {
+
+			$matches = array();
+			preg_match_all($regex, $contents, $matches, PREG_SET_ORDER);
+
+			foreach ($matches as $message) {
+				/* $message[0] = complete macro
+				 * $message[1] = prefix
+				 * $message[2] = 1. parameter
+				 * $message[3] = additional parameters
+				 */
+				$prefix = $this->functions[$message[1]];
+				$params = array(
+					1 => $message[2]
+				);
+				if (isset($message[3])) {
+					$m = array();
+					preg_match_all($paramsRegex, $message[3], $m, PREG_SET_ORDER);
+					foreach ($m as $index => $match) {
+						$params[$index + 2] = $match[1];
+					}
+				}
+				$result = array(
+					iFilter::LINE => $line + 1
+				);
+				foreach ($prefix as $position => $type) {
+					if (!isset($params[$position])) {
+						/** @todo print warning */
+						continue 2; // continue with next message
+					}
+					$result[$type] = $this->stripQuotes($this->fixEscaping($params[$position]));
+				}
+				$data[] = $result;
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Return a regular expression for matching a parameter.
+	 *
+	 * @return string
+	 */
+	private function createRegexForParam() {
+		return '(?:'.self::RE_STRING.'|\$'.self::RE_IDENTIFIER.'|'.self::RE_NUMBER.')';
+	}
+
+	/**
+	 * Return a regular expression for matching macro.
+	 *
+	 * @param array $macros
+	 * @return string
+	 */
+	private function createRegex(array $macros) {
+		$quotedMacros = array();
+		foreach ($macros as $prefix) {
+			$quotedMacros[] = preg_quote($prefix);
+		}
+		$replace = array(
+			'__MACRO__' => implode('|', $quotedMacros),
+			'__PARAM__' => $this->createRegexForParam(),
+			'__MODIFIER__' => self::RE_MODIFIER
+		);
+		$regex = str_replace(
+				array_keys($replace),
+				array_values($replace),
+				self::RE_TAG
+		);
+		return "/$regex/";
+	}
 }
