@@ -1,6 +1,10 @@
 <h1>Test file for NetteLatte filter</h1>
 
-{!_'I see %d little indians', 100}
-{_"Some \"serious\" text"|upper}
-{!_"Some \"serious\" text escaped"}
+{_"Some \"serious\" text."|upper}
+{!_"Some \"serious\" text escaped."}
 
+{_"Some repeating text."}  {!_"Another message."}
+
+{_p'context', 'A message with context.'}
+{_n'I see %d little indian!', 'I see %d little indians!', 3}
+{_np'context', 'I see %d little indian!', 'I see %d little indians!', 3}
