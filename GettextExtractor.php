@@ -27,7 +27,7 @@ if (version_compare(PHP_VERSION, '5.2.2', '<'))
  */    
 class GettextExtractor
 {
-    const LOG_FILE = '/extractor.log';
+    const LOG_FILE = 'extractor.log';
     const ESCAPE_CHARS = '"';
     const OUTPUT_PO = 'PO';
     const OUTPUT_POT = 'POT';
@@ -68,11 +68,14 @@ class GettextExtractor
      */
     public function __construct($logToFile = false)
     {
-        if (is_string($logToFile)) { // custom log file
-            $this->logHandler = fopen($logToFile, "w");
-        } elseif ($logToFile) { // default log file
-            $this->logHandler = fopen(dirname(__FILE__) . self::LOG_FILE, "w");
-        }
+
+		if ($logToFile === false) { // no loging
+			$logToFile = 'php://stderr';
+		} elseif (!is_string($logToFile)) { // default log file
+			$logToFile = self::LOG_FILE;
+		}
+		$this->logHandler = fopen($logToFile, "w");
+		$this->setOutputMode(self::OUTPUT_POT);
     }
     
     /**
