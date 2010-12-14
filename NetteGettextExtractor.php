@@ -26,30 +26,6 @@ require dirname(__FILE__) . '/GettextExtractor.php';
  */ 
 class NetteGettextExtractor extends GettextExtractor
 {
-	/** @var array */
-	protected $functionMap = array(
-		// standard translation functions
-		'translate' 	=> 1,
-		'_' 			=> 1,
-		// form translations
-		'setText'		=> 1,
-		'setEmptyValue' => 1,
-		'addButton'		=> 2,
-		'addCheckbox' 	=> 2,
-		'addError'		=> 1,
-		'addFile'		=> 2,
-		'addGroup'		=> 1,
-		'addImage'		=> 3,
-		'addMultiSelect' => 2,
-		'addPassword' 	=> 2,
-		'addRadioList' 	=> 2,
-		'addRule'		=> 2,
-		'addSelect' 	=> 2,
-		'addSubmit'		=> 2,
-		'addText'		=> 2,
-		'addTextArea' 	=> 2,
-		'skipFirst'		=> 1,
-	);
 	
 	/**
 	 * Setup mandatory filters
@@ -67,11 +43,12 @@ class NetteGettextExtractor extends GettextExtractor
 			->setFilter('phtml', 'PHP')
 			->setFilter('phtml', 'NetteLatte');
 			
-		$php = $this->getFilter('PHP');
-		$php->addFunction('translate')
-			->addFunction('_');
+		$this->getFilter('PHP')
+			->addFunction('translate');
 			
-		$this->getFilter('NetteLatte')->addPrefix('!_')->addPrefix('_');
+		$this->getFilter('NetteLatte')
+			->addPrefix('!_')
+			->addPrefix('_');
 	}
 	
 	/**

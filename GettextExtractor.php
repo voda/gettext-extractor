@@ -128,49 +128,28 @@ class GettextExtractor
     
     /**
      * Scans given files or directories (recursively) and stores extracted gettext keys in a buffer
+	 *
      * @param string $resource File or directory
      */
     protected function _scan($resource)
     {
-        if (!is_dir($resource) && !is_file($resource)) {
-            $this->throwException("Resource '$resource' is not a directory or file");
-        }
-        
         if (is_file($resource)) {
-            $this->inputFiles[] = realpath($resource);
-            return;
-        }
-        
-        // It's a directory
-        $resource = realpath($resource);
-        if (!$resource) return;
-        $iterator = dir($resource);
-        if (!$iterator) return;
-        
-        while (FALSE !== ($entry = $iterator->read())) {
-            if ($entry == '.' || $entry == '..') continue;
-
-            $path = $resource . '/' . $entry;
-            if (!is_readable($path)) continue;
-
-            if (is_dir($path)) {
-                $this->_scan($path);
-                continue;
-            }
-
-            if (is_file($path)) {
-                $info = pathinfo($path);
-                if (!isset($this->filters[$info['extension']])) continue;
-                $this->inputFiles[] = realpath($path);
-            }
-        }
-
-        $iterator->close();
-        
+            $this->inputFiles[] = $resource;
+        } elseif (is_dir($resource)) {
+			$iterator = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator($resource, RecursiveDirectoryIterator::SKIP_DOTS)
+			);
+			foreach ($iterator as $file) {
+				$this->inputFiles[] = $file;
+			}
+		} else {
+			$this->throwException("Resource '$resource' is not a directory or file");
+		}
     }
     
     /**
      * Extracts gettext keys from input files
+	 *
      * @param array $inputFiles
      * @return array
      */    
@@ -187,11 +166,12 @@ class GettextExtractor
             }
             
             $this->log('Extracting data from file ' . $inputFile);
+
+			$fileExtension = pathinfo($inputFile, PATHINFO_EXTENSION);
             foreach ($this->filters as $extension => $filters)
             {
                 // Check file extension
-                $info = pathinfo($inputFile);
-                if ($info['extension'] !== $extension) continue;
+                if ($fileExtension !== $extension) continue;
                 
                 $this->log('Processing file ' . $inputFile);
                 
