@@ -18,6 +18,8 @@
 if (version_compare(PHP_VERSION, '5.2.2', '<'))
     exit('GettextExtractor needs PHP 5.2.2 or newer');
 
+require_once dirname(__FILE__) . '/Filters/iFilter.php';
+
 /**
  * GettextExtractor tool
  *
@@ -130,7 +132,7 @@ class GettextExtractor
     }
     
     /**
-     * Scans given files or directories (recursively) and stores extracted gettext keys in a buffer
+     * Scans given files or directories (recursively)
 	 *
      * @param string $resource File or directory
      */
@@ -183,7 +185,7 @@ class GettextExtractor
                     $filter = $this->getFilter($filterName);
                     $filterData = $filter->extract($inputFile);
                     $this->log('  Filter ' . $filterName . ' applied');
-                    $this->data = array_merge_recursive($this->data, $filterData);
+					$this->addMessages($filterData, $inputFile);
                 }
             }
         }
@@ -317,32 +319,39 @@ class GettextExtractor
         }
         $output[] = '';
         
-        ksort($data);
-        
-        foreach ($data as $key => $files)
+        foreach ($data as $message)
         {
-            ksort($files);
-            foreach ($files as $file)
-                $output[] = '# ' . $file;
-            $output[] = 'msgid "' . $this->addSlashes($key) . '"';
-            /*if (preg_match($this->pluralMatchRegexp, $key, $matches)) { // TODO: really export plurals? deprecated for now
-                $output[] = 'msgid_plural "' . addslashes($key) . '"';
-                //$output[] = 'msgid_plural ""';
-                $output[] = 'msgstr[0] "' . addslashes($key) . '"';
-                $output[] = 'msgstr[1] "' . addslashes($key) . '"';
-            } else {
-                $output[] = 'msgstr "' . addslashes($key) . '"'; 
-            }*/
-            
-            switch ($this->outputMode) {
-                case self::OUTPUT_POT:
-                    $output[] = 'msgstr ""';
-                    break;
-                case self::OUTPUT_PO:
-                    // fallthrough
-                default:
-                    $output[] = 'msgstr "' . $this->addSlashes($key) . '"';
-            }
+            foreach ($message['files'] as $file) {
+                $output[] = '#: ' . $file[iFilter::FILE] . ':' . $file[iFilter::LINE];
+			}
+			if (isset ($message[iFilter::CONTEXT])) {
+				$output[] = 'msgctxt "' . $this->addSlashes($message[iFilter::CONTEXT]) . '"';
+			}
+            $output[] = 'msgid "' . $this->addSlashes($message[iFilter::SINGULAR]) . '"';
+			if (isset ($message[iFilter::PLURAL])) {
+				$output[] = 'msgid_plural "' . $this->addSlashes($message[iFilter::PLURAL]) . '"';
+				switch ($this->outputMode) {
+					case self::OUTPUT_POT:
+						$output[] = 'msgstr[0] ""';
+						$output[] = 'msgstr[1] ""';
+						break;
+					case self::OUTPUT_PO:
+						// fallthrough
+					default:
+						$output[] = 'msgstr[0] "' . $this->addSlashes($message[iFilter::SINGULAR]) . '"';
+						$output[] = 'msgstr[1] "' . $this->addSlashes($message[iFilter::PLURAL]) . '"';
+				}
+			} else {
+				switch ($this->outputMode) {
+					case self::OUTPUT_POT:
+						$output[] = 'msgstr ""';
+						break;
+					case self::OUTPUT_PO:
+						// fallthrough
+					default:
+						$output[] = 'msgstr "' . $this->addSlashes($key) . '"';
+				}
+			}
             
             $output[] = '';
         }
@@ -373,6 +382,31 @@ class GettextExtractor
         $this->outputMode = $outputMode;
         return $this;
     }
+
+	protected function addMessages(array $messages, $file) {
+		foreach ($messages as $message) {
+			$key = '';
+			if (isset($message[iFilter::CONTEXT])) {
+				$key .= $message[iFilter::CONTEXT];
+			}
+			$key .= chr(4);
+			$key .= $message[iFilter::SINGULAR];
+			$key .= chr(4);
+			if (isset($message[iFilter::PLURAL])) {
+				$key .= $message[iFilter::PLURAL];
+			}
+			$line = $message[iFilter::LINE];
+			if (!isset($this->data[$key])) {
+				unset($message[iFilter::LINE]);
+				$this->data[$key] = $message;
+				$this->data[$key]['files'] = array();
+			}
+			$this->data[$key]['files'][] = array(
+				iFilter::FILE => $file,
+				iFilter::LINE => $line
+			);
+		}
+	}
 
 
     
