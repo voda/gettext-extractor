@@ -31,47 +31,49 @@ class PHPFilter extends AFilter implements iFilter {
 		$this->addFunction('_np', 2, 3, 1);
 	}
 
-
-    /**
-     * Includes a function to parse gettext phrases from
+	/**
+	 * Includes a function to parse gettext phrases from
 	 *
-     * @param $functionName string
-     * @param $singular int
+	 * @param $functionName string
+	 * @param $singular int
 	 * @param $plural int|null
 	 * @param $context int|null
-     * @return PHPFilter
-     */
-    public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
+	 * @return PHPFilter
+	 */
+	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
 		parent::addFunction($functionName, $singular, $plural, $context);
-        return $this;
-    }
-    
-    /**
-     * Excludes a function from the function list
-     * @param $functionName
-     * @return PHPFilter
-     */
-    public function removeFunction($functionName) {
+		return $this;
+	}
+
+	/**
+	 * Excludes a function from the function list
+	 *
+	 * @param $functionName
+	 * @return PHPFilter
+	 */
+	public function removeFunction($functionName) {
 		parent::removeFunction($functionName);
-        return $this;
-    }
-    
-    /**
-     * Excludes all functions from the function list
-     * @return PHPFilter
-     */
-    public function removeAllFunctions() {
+		return $this;
+	}
+
+	/**
+	 * Excludes all functions from the function list
+	 *
+	 * @return PHPFilter
+	 */
+	public function removeAllFunctions() {
 		parent::removeAllFunctions();
-        return $this;
-    }
-    
-    /**
-     * Parses given file and returns found gettext phrases
-     * @param string $file
-     * @return array
-     */
-    public function extract($file) {
-        $data = array();
+		return $this;
+	}
+
+	/**
+	 * Parses given file and returns found gettext phrases
+	 *
+	 * @param string $file
+	 * @return array
+	 */
+	public function extract($file) {
+		$data = array();
 		$iterator = new ArrayIterator(token_get_all(file_get_contents($file)));
 		while ($iterator->valid()) {
 			$token = $iterator->current();
@@ -103,6 +105,6 @@ class PHPFilter extends AFilter implements iFilter {
 			}
 			$iterator->next();
 		}
-        return $data;
-    }
+		return $data;
+	}
 }
