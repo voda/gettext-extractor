@@ -11,29 +11,38 @@
  */
 
 require_once dirname(__FILE__) . '/iFilter.php';
+require_once dirname(__FILE__) . '/AFilter.php';
 
 /**
  * Filter to fetch gettext phrases from PHP functions
  * @author Karel Klíma
  * @copyright  Copyright (c) 2009 Karel Klíma
  */
-class PHPFilter implements iFilter
-{
-    /** @var array */
-    protected $functions = array(
-        'translate' => 1,
-        '_'    => 1
-    );
-    
+class PHPFilter extends AFilter implements iFilter {
+
+	public function __construct() {
+		$this->addFunction('gettext', 1);
+		$this->addFunction('_', 1);
+		$this->addFunction('ngettext', 1, 2);
+		$this->addFunction('_n', 1, 2);
+		$this->addFunction('pgettext', 2, null, 1);
+		$this->addFunction('_p', 2, null, 1);
+		$this->addFunction('npgettext', 2, 3, 1);
+		$this->addFunction('_np', 2, 3, 1);
+	}
+
+
     /**
      * Includes a function to parse gettext phrases from
-     * @param $functionName
-     * @param $argumentPosition
+	 *
+     * @param $functionName string
+     * @param $singular int
+	 * @param $plural int|null
+	 * @param $context int|null
      * @return PHPFilter
      */
-    public function addFunction($functionName, $argumentPosition = 1)
-    {
-        $this->functions[$functionName] = ceil((int) $argumentPosition);
+    public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
+		parent::addFunction($functionName, $singular, $plural, $context);
         return $this;
     }
     
@@ -42,9 +51,8 @@ class PHPFilter implements iFilter
      * @param $functionName
      * @return PHPFilter
      */
-    public function removeFunction($functionName)
-    {
-        unset($this->functions[$functionName]);
+    public function removeFunction($functionName) {
+		parent::removeFunction($functionName);
         return $this;
     }
     
@@ -52,22 +60,9 @@ class PHPFilter implements iFilter
      * Excludes all functions from the function list
      * @return PHPFilter
      */
-    public function removeAllFunctions()
-    {
-        $this->functions = array();
+    public function removeAllFunctions() {
+		parent::removeAllFunctions();
         return $this;
-    }
-
-    /**
-     * Removes backslashes from before primes and double primes in primed or double primed strings respectively
-     * @return string
-     */
-    public function fixEscaping($string)
-    {
-        $prime = substr($string, 0, 1);
-        $string = str_replace('\\' . $prime, $prime, $string);
-
-        return $string;
     }
     
     /**
@@ -75,29 +70,39 @@ class PHPFilter implements iFilter
      * @param string $file
      * @return array
      */
-    public function extract($file)
-    {
-        $pInfo = pathinfo($file);
+    public function extract($file) {
         $data = array();
-        $tokens = token_get_all(file_get_contents($file));
-        $next = false;
-        foreach ($tokens as $c)
-        {
-            if(is_array($c)) {
-                if ($c[0] != T_STRING && $c[0] != T_CONSTANT_ENCAPSED_STRING) continue;
-                if ($c[0] == T_STRING && isset($this->functions[$c[1]])) {
-                    $next = $this->functions[$c[1]];
-                    continue;
-                }
-                if ($c[0] == T_CONSTANT_ENCAPSED_STRING && $next == 1) {
-                    $data[substr($this->fixEscaping($c[1]), 1, -1)][] = $pInfo['basename'] . ':' . $c[2];
-                    $next = false; 
-                }
-            } else {
-                if ($c == ')') $next = false;
-                if ($c == ',' && $next != false) $next -= 1;
-            }
-        }
+		$iterator = new ArrayIterator(token_get_all(file_get_contents($file)));
+		while ($iterator->valid()) {
+			$token = $iterator->current();
+			if ($token[0] === T_STRING && isset($this->functions[$token[1]])) {
+				$definition = $this->functions[$token[1]];
+				$message = array();
+				$message[self::LINE] = $token[2];
+				$position = 0;
+				$iterator->next();
+				while ($iterator->valid()) {
+					$token = $iterator->current();
+					/** @todo check messages for variables ( 'foo'.$bar, "foo$bar") */
+					if ($token === '(') {
+						$position = 1;
+					} elseif ($token === ',') {
+						$position++;
+					} elseif ($token === ')') {
+						/** @todo check, that all parameters are set */
+						$data[] = $message;
+						$iterator->next();
+						break;
+					} elseif (is_array($token) && $token[0] === T_CONSTANT_ENCAPSED_STRING) {
+						if (isset($definition[$position])) {
+							$message[$definition[$position]] = $this->stripQuotes(($this->fixEscaping($token[1])));
+						}
+					}
+					$iterator->next();
+				}
+			}
+			$iterator->next();
+		}
         return $data;
     }
 }
