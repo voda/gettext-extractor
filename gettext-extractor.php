@@ -64,9 +64,9 @@ if (isset($options['k'])) {
 	}
 	foreach ($options['k'] as $value) {
 		$filter = $function = $params = null;
-		list ($filter, $function, $params) = split(':', $value);
+		list ($filter, $function, $params) = explode(':', $value);
 		$singular = $plural = $context = null;
-		$params = split(',', $params);
+		$params = explode(',', $params);
 		foreach ($params as &$param) {
 			$param = (int)$param;
 			if ($param === 0) {
