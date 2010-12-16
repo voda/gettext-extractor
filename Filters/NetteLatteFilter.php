@@ -124,7 +124,6 @@ class NetteLatteFilter extends AFilter implements iFilter {
 				);
 				foreach ($prefix as $position => $type) {
 					if (!isset($params[$position])) {
-						/** @todo print warning */
 						continue 2; // continue with next message
 					}
 					$result[$type] = $this->stripQuotes($this->fixEscaping($params[$position]));

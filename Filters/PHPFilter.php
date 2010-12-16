@@ -50,13 +50,16 @@ class PHPFilter extends AFilter implements iFilter {
 				$iterator->next();
 				while ($iterator->valid()) {
 					$token = $iterator->current();
-					/** @todo check messages for variables ( 'foo'.$bar, "foo$bar") */
 					if ($token === '(') {
 						$position = 1;
 					} elseif ($token === ',') {
 						$position++;
 					} elseif ($token === ')') {
-						/** @todo check, that all parameters are set */
+						foreach ($definition as $type) {
+							if (!isset($message[$type])) {
+								continue 2;
+							}
+						}
 						$data[] = $message;
 						$iterator->next();
 						break;
