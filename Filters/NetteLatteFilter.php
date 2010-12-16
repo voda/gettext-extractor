@@ -123,7 +123,7 @@ class NetteLatteFilter extends AFilter implements iFilter {
 					iFilter::LINE => $line + 1
 				);
 				foreach ($prefix as $position => $type) {
-					if (!isset($params[$position])) {
+					if (!isset($params[$position]) || !$this->isStaticString($params[$position])) {
 						continue 2; // continue with next message
 					}
 					$result[$type] = $this->stripQuotes($this->fixEscaping($params[$position]));
@@ -165,5 +165,19 @@ class NetteLatteFilter extends AFilter implements iFilter {
 				self::RE_TAG
 		);
 		return "/$regex/";
+	}
+
+	/**
+	 * Check if string is static. No variables, no composing.
+	 *
+	 * @param string $string
+	 * @return bool
+	 */
+	private function isStaticString($string) {
+		if (substr($string, 0, 1) === '$') {
+			return false;
+		}
+		/** @todo more tests needed: "some$string", 'some'.$string */
+		return true;
 	}
 }
