@@ -63,9 +63,11 @@ class PHPFilter extends AFilter implements iFilter {
 						$data[] = $message;
 						$iterator->next();
 						break;
-					} elseif (is_array($token) && $token[0] === T_CONSTANT_ENCAPSED_STRING) {
-						if (isset($definition[$position])) {
+					} elseif (is_array($token)) {
+						 if ($token[0] === T_CONSTANT_ENCAPSED_STRING && isset($definition[$position])) {
 							$message[$definition[$position]] = $this->stripQuotes(($this->fixEscaping($token[1])));
+						} elseif ($token[0] === T_STRING) {
+							continue 2;
 						}
 					}
 					$iterator->next();
