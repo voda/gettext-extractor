@@ -399,6 +399,9 @@ class GettextExtractor {
 			if (isset($message[iFilter::PLURAL])) {
 				$key .= $message[iFilter::PLURAL];
 			}
+			if ($key === chr(4).chr(4)) {
+				continue;
+			}
 			$line = $message[iFilter::LINE];
 			if (!isset($this->data[$key])) {
 				unset($message[iFilter::LINE]);
