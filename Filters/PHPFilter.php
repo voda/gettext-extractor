@@ -57,7 +57,7 @@ class PHPFilter extends AFilter implements iFilter {
 					} elseif ($token === ')') {
 						foreach ($definition as $type) {
 							if (!isset($message[$type])) {
-								continue 2;
+								break 2;
 							}
 						}
 						$data[] = $message;
