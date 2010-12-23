@@ -42,39 +42,107 @@ class PHPFilter extends AFilter implements iFilter {
 		$iterator = new ArrayIterator(token_get_all(file_get_contents($file)));
 		while ($iterator->valid()) {
 			$token = $iterator->current();
-			if ($token[0] === T_STRING && isset($this->functions[$token[1]])) {
-				$definition = $this->functions[$token[1]];
-				$message = array();
-				$message[self::LINE] = $token[2];
-				$position = 0;
-				$iterator->next();
-				while ($iterator->valid()) {
-					$token = $iterator->current();
-					if ($token === '(') {
-						$position = 1;
-					} elseif ($token === ',') {
-						$position++;
-					} elseif ($token === ')') {
-						foreach ($definition as $type) {
-							if (!isset($message[$type])) {
-								break 2;
-							}
-						}
-						$data[] = $message;
-						$iterator->next();
-						break;
-					} elseif (is_array($token)) {
-						 if ($token[0] === T_CONSTANT_ENCAPSED_STRING && isset($definition[$position])) {
-							$message[$definition[$position]] = $this->stripQuotes(($this->fixEscaping($token[1])));
-						} elseif ($token[0] === T_STRING) {
-							continue 2;
-						}
+			$key = $iterator->key();
+			if ($token[0] === T_STRING) {
+				if ($this->isFunction($iterator)) {
+					if (isset($this->functions[$token[1]])) {
+						$iterator->seek($key);
+						$this->extractFunction($iterator, $data);
 					}
-					$iterator->next();
 				}
 			}
 			$iterator->next();
 		}
 		return $data;
+	}
+
+	private function extractParameter(ArrayIterator $iterator, array &$data) {
+		$param = null;
+		$valid = true;
+		while ($iterator->valid()) {
+			$token = $iterator->current();
+			$key = $iterator->key();
+			if ($token === ',' || $token === ')') {
+				if (!$valid && is_string($param)) {
+					$param = null;
+				}
+				return $param;
+			} elseif ($token === '.') {
+				$valid = false;
+			} elseif (is_array($token) && $token[0] === T_CONSTANT_ENCAPSED_STRING) { //string
+				$param = $this->stripQuotes(($this->fixEscaping($token[1])));
+			} elseif (is_array($token) && $token[0] === T_STRING) { //constant or function
+				if ($this->isFunction($iterator)) {
+					$iterator->seek($key);
+					$this->extractFunction($iterator, $data);
+				}
+				$valid = false;
+			}
+			$iterator->next();
+		}
+	}
+
+	private function isFunction(ArrayIterator $iterator) {
+		$key = $iterator->key();
+		$iterator->next();
+		while ($iterator->valid()) {
+			$token = $iterator->current();
+			if ($token === '(') {
+				$iterator->seek($key);
+				return true;
+			} elseif (is_array($token) && $token[0] === T_WHITESPACE) {
+				$iterator->next();
+				continue;
+			} else {
+				$iterator->seek($key);
+				return false;
+			}
+		}
+		$iterator->seek($key);
+		return false;
+	}
+
+	private function extractFunction(ArrayIterator $iterator, array &$data) {
+		$token = $iterator->current();
+		$definition = isset($this->functions[$token[1]]) ? $this->functions[$token[1]] : array();
+		$message = array();
+		$message[self::LINE] = $token[2];
+		$position = 0;
+		$iterator->next();
+		while ($iterator->valid()) {
+			$token = $iterator->current();
+			if ($token === '(') {
+				$position = 1;
+				break;
+			}
+			$iterator->next();
+		}
+		$iterator->next();
+		while ($iterator->valid()) {
+			$param = $this->extractParameter($iterator, $data);
+			if (isset($definition[$position]) && is_string($param)) {
+				$message[$definition[$position]] = $param;
+			}
+			while ($iterator->valid()) {
+				$token = $iterator->current();
+				if ($token === ',') {
+					$position++;
+					break;
+				} elseif ($token === ')') {
+					break 2;
+				}
+				$iterator->next();
+			}
+			$iterator->next();
+		}
+		if (count($message) === 1) {
+			return;
+		}
+		foreach ($definition as $type) {
+			if (!isset($message[$type])) {
+				return;
+			}
+		}
+		$data[] = $message;
 	}
 }
