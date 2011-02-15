@@ -29,6 +29,8 @@ class NetteLatteFilter extends AFilter implements iFilter {
 
 	/** @internal PHP identifier, from Nette\Templates\LatteFilter */
 	const RE_IDENTIFIER = '[_a-zA-Z\x7F-\xFF][_a-zA-Z0-9\x7F-\xFF]*';
+	
+	const RE_VARIABLE = '\$__IDENTIFIER__(?:\[.*?\]|(?:->|::)__IDENTIFIER__)*';
 
 	const RE_MODIFIER = '\\|[^|}]+';
 
@@ -140,7 +142,7 @@ class NetteLatteFilter extends AFilter implements iFilter {
 	 * @return string
 	 */
 	private function createRegexForParam() {
-		return '(?:'.self::RE_STRING.'|\$'.self::RE_IDENTIFIER.'|'.self::RE_NUMBER.')';
+		return '(?:'.self::RE_STRING.'|'.self::RE_IDENTIFIER.'|'.self::RE_VARIABLE.'|'.self::RE_NUMBER.')';
 	}
 
 	/**
@@ -157,7 +159,8 @@ class NetteLatteFilter extends AFilter implements iFilter {
 		$replace = array(
 			'__MACRO__' => implode('|', $quotedMacros),
 			'__PARAM__' => $this->createRegexForParam(),
-			'__MODIFIER__' => self::RE_MODIFIER
+			'__IDENTIFIER__' => self::RE_IDENTIFIER,
+			'__MODIFIER__' => self::RE_MODIFIER,
 		);
 		$regex = str_replace(
 				array_keys($replace),
