@@ -35,4 +35,63 @@ class NetteLatteFilterTest extends FilterTest {
 			iFilter::CONTEXT => '$baz'
 		),$messages);
 	}
+
+	public function testConstantsArrayMethodsAndFunctions() {
+		$messages = $this->object->extract(dirname(__FILE__) . '/../data/test.latte');
+
+		$this->assertContains(array(
+			iFilter::LINE => 1,
+			iFilter::SINGULAR => 'Testovaci retezec'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 3,
+			iFilter::SINGULAR => '69'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 4,
+			iFilter::SINGULAR => 'CONSTANT'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 5,
+			iFilter::SINGULAR => 'Class::CONSTANT'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 6,
+			iFilter::SINGULAR => 'Class::method()'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 7,
+			iFilter::SINGULAR => '$array[0]'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 8,
+			iFilter::SINGULAR => '$varFunc()'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 9,
+			iFilter::SINGULAR => '$object->method()'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 10,
+			iFilter::SINGULAR => 'function()'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 11,
+			iFilter::SINGULAR => 'function()->fluent()'
+		),$messages);
+
+		$this->assertNotContains(array(
+			iFilter::LINE => 12,
+			iFilter::SINGULAR => 'Class::$var[0][\'key\']($arg)->method()->method()'
+		),$messages);
+	}
 }
