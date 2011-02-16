@@ -29,13 +29,13 @@ class NetteLatteFilter extends AFilter implements iFilter {
 
 	/** @internal PHP identifier, from Nette\Templates\LatteFilter */
 	const RE_IDENTIFIER = '[_a-zA-Z\x7F-\xFF][_a-zA-Z0-9\x7F-\xFF]*';
-	
+
 	const RE_ARGS = '\(.*?\)';
 	const RE_FUNCTION = '__IDENTIFIER____ARGS__(?:->__IDENTIFIER____ARGS__)*'; // Function can return object, so fluent interface is applicable
 	const RE_KEY = '\[.*?\]';
 	const RE_VARIABLE = '\$__IDENTIFIER__(?:__KEY__)*(?:__ARGS__)?(?:->__FUNCTION__)?'; // It's possible to access multidimensional array, variable functions and objects' fluent interface
-    const RE_STATIC = '__IDENTIFIER__(?:::(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__))?';
-	
+	const RE_STATIC = '__IDENTIFIER__(?:::(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__))?';
+
 	const RE_MODIFIER = '\\|[^|}]+';
 
 	const RE_NUMBER = '\d+';
@@ -44,14 +44,11 @@ class NetteLatteFilter extends AFilter implements iFilter {
 	const RE_TAG = '\{(__MACRO__)\s*(__PARAM__)((?:,\s*__PARAM__)+)?(?:__MODIFIER__)*\}';
 
 
-	static protected $regexForParam;
+	protected static $regexForParam;
 
 	/** @var array */
 	protected $prefixes = array();
 
-	/**
-	 * Mandatory work...
-	 */
 	public function __construct() {
 		$this->addFunction('_');
 		$this->addFunction('!_');
@@ -148,22 +145,22 @@ class NetteLatteFilter extends AFilter implements iFilter {
 	 * @return string
 	 */
 	private function createRegexForParam() {
-	    if (!isset(self::$regexForParam)) {
-            self::$regexForParam = '(?:'.self::RE_NUMBER.'|'.self::RE_STRING.'|'.self::RE_STATIC.'|'.self::RE_VARIABLE.'|'.self::RE_FUNCTION.')';
-            $replace = array(
-                '__STATIC__' => self::RE_STATIC,
-                '__VARIABLE__' => self::RE_VARIABLE,
-                '__FUNCTION__' => self::RE_FUNCTION,
-                '__ARGS__' => self::RE_ARGS,
-                '__KEY__' => self::RE_KEY,
-            );
-            self::$regexForParam = str_replace(
-                array_keys($replace),
-                array_values($replace),
-                self::$regexForParam
-            );
-        }
-        
+		if (!isset(self::$regexForParam)) {
+			self::$regexForParam = '(?:'.self::RE_NUMBER.'|'.self::RE_STRING.'|'.self::RE_STATIC.'|'.self::RE_VARIABLE.'|'.self::RE_FUNCTION.')';
+			$replace = array(
+				'__STATIC__' => self::RE_STATIC,
+				'__VARIABLE__' => self::RE_VARIABLE,
+				'__FUNCTION__' => self::RE_FUNCTION,
+				'__ARGS__' => self::RE_ARGS,
+				'__KEY__' => self::RE_KEY,
+			);
+			self::$regexForParam = str_replace(
+				array_keys($replace),
+				array_values($replace),
+				self::$regexForParam
+			);
+		}
+
 		return self::$regexForParam;
 	}
 
@@ -189,7 +186,7 @@ class NetteLatteFilter extends AFilter implements iFilter {
 				array_values($replace),
 				self::RE_TAG
 		);
-		
+
 		return "/$regex/";
 	}
 

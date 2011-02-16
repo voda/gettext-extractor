@@ -16,7 +16,6 @@ class NetteLatteFilterTest extends FilterTest {
 
 	public function testFunctionCallWithVariables() {
 		$messages = $this->object->extract($this->file);
-		var_dump($messages);
 
 		$this->assertNotContains(array(
 			iFilter::LINE => 7,
