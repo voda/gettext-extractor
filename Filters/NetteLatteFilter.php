@@ -197,10 +197,11 @@ class NetteLatteFilter extends AFilter implements iFilter {
 	 * @return bool
 	 */
 	private function isStaticString($string) {
-		if (substr($string, 0, 1) === '$') {
-			return false;
+		$prime = substr($string,0,1);
+		if (($prime === "'" || $prime === '"') && substr($string, -1, 1) === $prime) {
+			return true;
 		}
-		/** @todo more tests needed: "some$string", 'some'.$string */
-		return true;
+		/** @todo more tests needed: "some$string" "{$object->method()}" */
+		return false;
 	}
 }
