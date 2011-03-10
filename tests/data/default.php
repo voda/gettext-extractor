@@ -18,3 +18,6 @@ $form->addRule(getARule(), 'Please provide a text 2.');
 $form->addRule(getARule('a parameter'), 'Please provide a text 3.');
 
 $translator->gettext('A'.' message!');
+
+$translator->gettext('A
+message!');
