@@ -330,11 +330,11 @@ class GettextExtractor {
 				$output[] = '#: '.$file[iFilter::FILE].':'.$file[iFilter::LINE];
 			}
 			if (isset($message[iFilter::CONTEXT])) {
-				$output[] = 'msgctxt "'.$this->addSlashes($message[iFilter::CONTEXT]).'"';
+				$output[] = $this->formatMessage($message[iFilter::CONTEXT], "msgctxt");
 			}
-			$output[] = 'msgid "'.$this->addSlashes($message[iFilter::SINGULAR]).'"';
+			$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgid');
 			if (isset($message[iFilter::PLURAL])) {
-				$output[] = 'msgid_plural "'.$this->addSlashes($message[iFilter::PLURAL]).'"';
+				$output[] = $this->formatMessage($message[iFilter::PLURAL], 'msgid_plural');
 				switch ($this->outputMode) {
 					case self::OUTPUT_POT:
 						$output[] = 'msgstr[0] ""';
@@ -343,8 +343,8 @@ class GettextExtractor {
 					case self::OUTPUT_PO:
 					// fallthrough
 					default:
-						$output[] = 'msgstr[0] "'.$this->addSlashes($message[iFilter::SINGULAR]).'"';
-						$output[] = 'msgstr[1] "'.$this->addSlashes($message[iFilter::PLURAL]).'"';
+						$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgstr[0]');
+						$output[] = $this->formatMessage($message[iFilter::PLURAL], 'msgstr[1]');
 				}
 			} else {
 				switch ($this->outputMode) {
@@ -354,7 +354,7 @@ class GettextExtractor {
 					case self::OUTPUT_PO:
 					// fallthrough
 					default:
-						$output[] = 'msgstr "'.$this->addSlashes($key).'"';
+						$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgstr');
 				}
 			}
 
@@ -413,5 +413,11 @@ class GettextExtractor {
 				iFilter::LINE => $line
 			);
 		}
+	}
+
+	protected function formatMessage($message, $prefix = null) {
+		$message = $this->addSlashes($message);
+		$message = '"' . str_replace("\n", "\\n\"\n\"", $message) . '"';
+		return ($prefix ? $prefix.' ' : '') . $message;;
 	}
 }
