@@ -389,6 +389,13 @@ class GettextExtractor {
 
 	protected function addMessages(array $messages, $file) {
 		foreach ($messages as $message) {
+			$eot = preg_match('~\x04|\\\\[x0]04~', $message[iFilter::SINGULAR], $matches, PREG_OFFSET_CAPTURE);
+			
+			if ($eot && !isset($message[iFilter::CONTEXT])) {
+				$message[iFilter::CONTEXT] = substr($message[iFilter::SINGULAR], 0, $matches[0][1]);
+				$message[iFilter::SINGULAR] = substr($message[iFilter::SINGULAR], strlen($matches[0][0]) + $matches[0][1]);
+			}
+			
 			$key = '';
 			if (isset($message[iFilter::CONTEXT])) {
 				$key .= $message[iFilter::CONTEXT];
