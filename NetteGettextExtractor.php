@@ -74,6 +74,7 @@ class NetteGettextExtractor extends GettextExtractor {
 				->addFunction('addSubmit', 2)
 				->addFunction('addText', 2)
 				->addFunction('addTextArea', 2)
+				->addFunction('setRequired')
 				->addFunction('skipFirst')
 				->addFunction('addProtection');
 
