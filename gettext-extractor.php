@@ -65,7 +65,6 @@ if (isset($options['k'])) {
 	foreach ($options['k'] as $value) {
 		$filter = $function = $params = null;
 		list ($filter, $function, $params) = explode(':', $value);
-		$singular = $plural = $context = null;
 		$params = explode(',', $params);
 		foreach ($params as &$param) {
 			$param = (int)$param;
@@ -73,13 +72,12 @@ if (isset($options['k'])) {
 				$param = null;
 			}
 		}
-		list ($singular, $plural, $context) = $params;
 		$keywords[] = array(
 			'filter' => $filter,
 			'function' => $function,
-			'singular' => $singular,
-			'plural' => $plural,
-			'context' => $context
+			'singular' => isset($params[0]) ? $params[0] : null,
+			'plural' => isset($params[1]) ? $params[1] : null,
+			'context' => isset($params[2]) ? $params[2] : null
 		);
 	}
 }
