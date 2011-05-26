@@ -151,7 +151,7 @@ class GettextExtractor {
 					new RecursiveDirectoryIterator($resource, RecursiveDirectoryIterator::SKIP_DOTS)
 			);
 			foreach ($iterator as $file) {
-				$this->inputFiles[] = $file;
+				$this->inputFiles[] = $file->getPathName();
 			}
 		} else {
 			$this->throwException("Resource '$resource' is not a directory or file");
@@ -166,6 +166,7 @@ class GettextExtractor {
 	 */
 	protected function _extract($inputFiles) {
 		$inputFiles = array_unique($inputFiles);
+		sort($inputFiles);
 		foreach ($inputFiles as $inputFile) {
 			if (!file_exists($inputFile)) {
 				$this->throwException('ERROR: Invalid input file specified: '.$inputFile);
