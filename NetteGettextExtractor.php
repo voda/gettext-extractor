@@ -40,7 +40,9 @@ class NetteGettextExtractor extends GettextExtractor {
 		// Set basic filters
 		$this->setFilter('php', 'PHP')
 				->setFilter('phtml', 'PHP')
-				->setFilter('phtml', 'NetteLatte');
+				->setFilter('phtml', 'NetteLatte')
+				->setFilter('latte', 'PHP')
+				->setFilter('latte', 'NetteLatte');
 
 		$this->getFilter('PHP')
 				->addFunction('translate');
