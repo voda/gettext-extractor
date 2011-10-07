@@ -16,8 +16,9 @@ $output = 'php://stdout';
 $log = 'php://stderr';
 $files = null;
 $keywords = null;
+$meta = null;
 
-$options = getopt('o::l::f:hk:');
+$options = getopt('o::l::f:hk:m:');
 
 
 if (isset($options['h'])) {
@@ -34,6 +35,7 @@ Options:
 				default FILTERs are PHP and NetteLatte
 				for SINGULAR, PLURAL and CONTEXT '0' means not set
 				can be specified several times
+  -mKEY:VALUE   set meta header
 
 EOF;
 	exit;
@@ -81,6 +83,16 @@ if (isset($options['k'])) {
 		);
 	}
 }
+if (isset($options['m'])) {
+	if (is_string($options['m'])) {
+		$options['m'] = array($options['m']);
+	}
+	$key = $value = null;
+	foreach ($options['m'] as $m) {
+		list($key, $value) = explode(':', $m, 2);
+		$meta[$key] = $value;
+	}
+}
 
 $extractor = new NetteGettextExtractor($log);
 $extractor->setupForms()->setupDataGrid();
@@ -88,6 +100,11 @@ if ($keywords !== null) {
 	foreach ($keywords as $value) {
 		$extractor->getFilter($value['filter'])
 				->addFunction($value['function'], $value['singular'], $value['plural'], $value['context']);
+	}
+}
+if ($meta) {
+	foreach ($meta as $key => $value) {
+		$extractor->setMeta($key, $value);
 	}
 }
 $extractor->scan($options['f']);
