@@ -14,7 +14,6 @@ require dirname(__FILE__) . '/NetteGettextExtractor.php';
 
 $output = 'php://stdout';
 $log = 'php://stderr';
-$files = null;
 $keywords = null;
 $meta = null;
 
@@ -32,9 +31,9 @@ Options:
   -fFILE        file to extract, can be specified several times
   -kFUNCTION    add FUNCTION to filters, format is:
                 FILTER:FUNCTION_NAME:SINGULAR,PLURAL,CONTEXT
-				default FILTERs are PHP and NetteLatte
-				for SINGULAR, PLURAL and CONTEXT '0' means not set
-				can be specified several times
+                default FILTERs are PHP and NetteLatte
+                for SINGULAR, PLURAL and CONTEXT '0' means not set
+                can be specified several times
   -mKEY:VALUE   set meta header
 
 EOF;
