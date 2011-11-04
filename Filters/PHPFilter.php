@@ -77,6 +77,11 @@ class PHPFilter extends AFilter implements iFilter {
 					$this->extractFunction($iterator, $data);
 				}
 				$valid = false;
+			} elseif ($token === '(') {
+				do {
+					$iterator->next();
+					$token = $iterator->current();
+				} while ($token !== ')' && $iterator->valid());
 			}
 			$iterator->next();
 		}
