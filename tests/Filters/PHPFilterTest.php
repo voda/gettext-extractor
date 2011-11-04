@@ -95,4 +95,14 @@ class PHPFilterTest extends FilterTest {
 			iFilter::SINGULAR => "A\nmessage!"
 		),$messages);
 	}
+
+	public function testArrayAsParameter() {
+		$this->object->addFunction('addConfirmer', 3);
+		$messages = $this->object->extract($this->file);
+
+		$this->assertContains(array(
+			iFilter::LINE => 25,
+			iFilter::SINGULAR => "Really delete?"
+		),$messages);
+	}
 }

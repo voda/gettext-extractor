@@ -21,3 +21,5 @@ $translator->gettext('A'.' message!');
 
 $translator->gettext('A
 message!');
+
+$dialog->addConfirmer('delete', array($this, 'delete'), "Really delete?");
