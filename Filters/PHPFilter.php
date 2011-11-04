@@ -77,11 +77,9 @@ class PHPFilter extends AFilter implements iFilter {
 					$this->extractFunction($iterator, $data);
 				}
 				$valid = false;
-			} elseif ($token === '(') {
-				do {
-					$iterator->next();
-					$token = $iterator->current();
-				} while ($token !== ')' && $iterator->valid());
+			} elseif (is_array($token) && $token[0] === T_ARRAY) {
+				$iterator->seek($key);
+				$this->extractFunction($iterator, $data);
 			}
 			$iterator->next();
 		}
@@ -99,8 +97,7 @@ class PHPFilter extends AFilter implements iFilter {
 				$iterator->next();
 				continue;
 			} else {
-				$iterator->seek($key);
-				return false;
+				break;
 			}
 		}
 		$iterator->seek($key);

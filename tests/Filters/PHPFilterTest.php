@@ -105,4 +105,22 @@ class PHPFilterTest extends FilterTest {
 			iFilter::SINGULAR => "Really delete?"
 		),$messages);
 	}
+
+	public function testArrayWithTranslationsAsParameter() {
+		$this->object->addFunction('addSelect', 2);
+		$messages = $this->object->extract($this->file);
+
+		$this->assertContains(array(
+			iFilter::LINE => 26,
+			iFilter::SINGULAR => "label"
+		),$messages);
+		$this->assertContains(array(
+			iFilter::LINE => 27,
+			iFilter::SINGULAR => "item 1"
+		),$messages);
+		$this->assertContains(array(
+			iFilter::LINE => 28,
+			iFilter::SINGULAR => "item 2"
+		),$messages);
+	}
 }
