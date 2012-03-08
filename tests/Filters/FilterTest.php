@@ -45,5 +45,5 @@ abstract class FilterTest extends PHPUnit_Framework_TestCase {
 			iFilter::CONTEXT => 'context'
 		), $messages);
 	}
-    
+
 }

@@ -1,17 +1,17 @@
 <?php
-
 /**
  * GettextExtractor
- * 
+ *
  * Cool tool for automatic extracting gettext strings for translation
  *
  * Works best with Nette Framework
- * 
+ *
  * This source file is subject to the New BSD License.
  *
- * @copyright  Copyright (c) 2009 Karel Klíma
- * @license    New BSD License
- * @package    Nette Extras
+ * @copyright Copyright (c) 2009 Karel Klíma
+ * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @license New BSD License
+ * @package Nette Extras
  */
 
 require_once dirname(__FILE__) . '/iFilter.php';
@@ -20,7 +20,7 @@ require_once dirname(__FILE__) . '/AFilter.php';
 /**
  * Filter to parse curly brackets syntax in Nette Framework templates
  * @author Karel Klíma
- * @copyright  Copyright (c) 2009 Karel Klíma
+ * @author Ondřej Vodáček
  */
 class NetteLatteFilter extends AFilter implements iFilter {
 

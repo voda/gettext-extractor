@@ -1,18 +1,17 @@
 <?php
-
 /**
  * GettextExtractor
- * 
+ *
  * Cool tool for automatic extracting gettext strings for translation
  *
  * Works best with Nette Framework
- * 
+ *
  * This source file is subject to the New BSD License.
  *
- * @copyright  Copyright (c) 2009 Karel Klima
- * @license    New BSD License
- * @package    Nette Extras
- * @version    GettextExtractor 2.0, 2009-10-21
+ * @copyright Copyright (c) 2009 Karel Klima
+ * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @license New BSD License
+ * @package Nette Extras
  */
 
 require dirname(__FILE__) . '/GettextExtractor.php';
@@ -20,9 +19,9 @@ require dirname(__FILE__) . '/GettextExtractor.php';
 /**
  * NetteGettextExtractor tool - designed specially for use with Nette Framework
  *
- * @author     Karel Klima
- * @copyright  Copyright (c) 2009 Karel Klíma
- * @package    Nette Extras
+ * @author Karel Klima
+ * @author Ondřej Vodáček
+ * @package Nette Extras
  */
 class NetteGettextExtractor extends GettextExtractor {
 

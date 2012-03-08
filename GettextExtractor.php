@@ -1,18 +1,17 @@
 <?php
-
 /**
  * GettextExtractor
- * 
+ *
  * Cool tool for automatic extracting gettext strings for translation
  *
  * Works best with Nette Framework
- * 
+ *
  * This source file is subject to the New BSD License.
  *
- * @copyright  Copyright (c) 2009 Karel Klima
- * @license    New BSD License
- * @package    Nette Extras
- * @version    GettextExtractor 2.0, 2009-10-21
+ * @copyright Copyright (c) 2009 Karel Klima
+ * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @license New BSD License
+ * @package Nette Extras
  */
 
 if (version_compare(PHP_VERSION, '5.2.2', '<'))
@@ -23,9 +22,8 @@ require_once dirname(__FILE__) . '/Filters/iFilter.php';
 /**
  * GettextExtractor tool
  *
- * @author     Karel Klima
- * @copyright  Copyright (c) 2009 Karel Klíma
- * @package    Nette Extras
+ * @author Karel Klima
+ * @author Ondřej Vodáček
  */
 class GettextExtractor {
 
@@ -116,7 +114,6 @@ class GettextExtractor {
 	protected function throwException($message) {
 		$message = $message ? $message : 'Something unexpected occured. See GettextExtractor log for details';
 		$this->log($message);
-		//echo $message;
 		throw new Exception($message);
 	}
 
@@ -378,7 +375,7 @@ class GettextExtractor {
 	/**
 	 * Sets output mode.
 	 * On OUTPUT_PO, english msgstrs will be generated,
-	 *     on OUTPUT_POT, msgstrs will be empty
+	 * on OUTPUT_POT, msgstrs will be empty
 	 *
 	 * @param string $outputMode
 	 * @return string

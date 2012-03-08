@@ -1,13 +1,13 @@
 <?php
-
 /**
  * GettextExtractor
- * 
+ *
  * This source file is subject to the New BSD License.
  *
- * @copyright  Copyright (c) 2009 Karel Klíma
- * @license    New BSD License
- * @package    Nette Extras
+ * @copyright Copyright (c) 2009 Karel Klíma
+ * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @license New BSD License
+ * @package Nette Extras
  */
 
 require_once dirname(__FILE__) . '/iFilter.php';
@@ -16,7 +16,7 @@ require_once dirname(__FILE__) . '/AFilter.php';
 /**
  * Filter to fetch gettext phrases from PHP functions
  * @author Karel Klíma
- * @copyright  Copyright (c) 2009 Karel Klíma
+ * @author Ondřej Vodáček
  */
 class PHPFilter extends AFilter implements iFilter {
 

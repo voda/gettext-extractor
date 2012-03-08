@@ -5,9 +5,9 @@
  *
  * This source file is subject to the New BSD License.
  *
- * @copyright  Copyright (c) 2010 Ondřej Vodáček
- * @license    New BSD License
- * @package    Nette Extras
+ * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @license New BSD License
+ * @package Nette Extras
  */
 
 require dirname(__FILE__) . '/NetteGettextExtractor.php';
