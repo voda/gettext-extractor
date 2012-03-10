@@ -24,6 +24,6 @@ message!');
 
 $dialog->addConfirmer('delete', array($this, 'delete'), "Really delete?");
 $form->addSelect('name', 'label', array(
-	_('item 1'),
-	_('item 2')
+	'item 1',
+	'item 2'
 ));

@@ -106,19 +106,15 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 	}
 
 	public function testArrayWithTranslationsAsParameter() {
-		$this->object->addFunction('addSelect', 2);
+		$this->object->addFunction('addSelect', 3);
 		$messages = $this->object->extract($this->file);
 
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 26,
-			GettextExtractor_Extractor::SINGULAR => "label"
-		),$messages);
-		$this->assertContains(array(
-			GettextExtractor_Extractor::LINE => 27,
 			GettextExtractor_Extractor::SINGULAR => "item 1"
 		),$messages);
 		$this->assertContains(array(
-			GettextExtractor_Extractor::LINE => 28,
+			GettextExtractor_Extractor::LINE => 26,
 			GettextExtractor_Extractor::SINGULAR => "item 2"
 		),$messages);
 	}

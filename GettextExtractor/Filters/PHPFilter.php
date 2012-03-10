@@ -4,18 +4,19 @@
  *
  * This source file is subject to the New BSD License.
  *
- * @copyright Copyright (c) 2009 Karel Klíma
- * @copyright Copyright (c) 2010 Ondřej Vodáček
+ * @copyright Copyright (c) 2012 Ondřej Vodáček
  * @license New BSD License
  * @package Nette Extras
  */
 
 /**
  * Filter to fetch gettext phrases from PHP functions
- * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter {
+class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter, PHPParser_NodeVisitor {
+
+	/** @var array */
+	private $data;
 
 	public function __construct() {
 		$this->addFunction('gettext', 1);
@@ -35,113 +36,73 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 	 * @return array
 	 */
 	public function extract($file) {
-		$data = array();
-		$iterator = new ArrayIterator(token_get_all(file_get_contents($file)));
-		while ($iterator->valid()) {
-			$token = $iterator->current();
-			$key = $iterator->key();
-			if ($token[0] === T_STRING) {
-				if ($this->isFunction($iterator)) {
-					if (isset($this->functions[$token[1]])) {
-						$iterator->seek($key);
-						$this->extractFunction($iterator, $data);
-					}
-				}
-			}
-			$iterator->next();
-		}
+		$this->data = array();
+		$parser = new PHPParser_Parser();
+		$stmts = $parser->parse(new PHPParser_Lexer(file_get_contents($file)));
+		$traverser = new PHPParser_NodeTraverser();
+		$traverser->addVisitor($this);
+		$traverser->traverse($stmts);
+		$data = $this->data;
+		$this->data = null;
 		return $data;
 	}
 
-	private function extractParameter(ArrayIterator $iterator, array &$data) {
-		$param = null;
-		$valid = true;
-		while ($iterator->valid()) {
-			$token = $iterator->current();
-			$key = $iterator->key();
-			if ($token === ',' || $token === ')') {
-				if (!$valid && is_string($param)) {
-					$param = null;
-				}
-				return $param;
-			} elseif ($token === '.') {
-				$valid = false;
-			} elseif (is_array($token) && $token[0] === T_CONSTANT_ENCAPSED_STRING) { //string
-				$param = $this->stripQuotes(($this->fixEscaping($token[1])));
-			} elseif (is_array($token) && $token[0] === T_STRING) { //constant or function
-				if ($this->isFunction($iterator)) {
-					$iterator->seek($key);
-					$this->extractFunction($iterator, $data);
-				}
-				$valid = false;
-			} elseif (is_array($token) && $token[0] === T_ARRAY) {
-				$iterator->seek($key);
-				$this->extractFunction($iterator, $data);
-			}
-			$iterator->next();
-		}
-	}
-
-	private function isFunction(ArrayIterator $iterator) {
-		$key = $iterator->key();
-		$iterator->next();
-		while ($iterator->valid()) {
-			$token = $iterator->current();
-			if ($token === '(') {
-				$iterator->seek($key);
-				return true;
-			} elseif (is_array($token) && $token[0] === T_WHITESPACE) {
-				$iterator->next();
-				continue;
-			} else {
-				break;
-			}
-		}
-		$iterator->seek($key);
-		return false;
-	}
-
-	private function extractFunction(ArrayIterator $iterator, array &$data) {
-		$token = $iterator->current();
-		$definition = isset($this->functions[$token[1]]) ? $this->functions[$token[1]] : array();
-		$message = array();
-		$message[GettextExtractor_Extractor::LINE] = $token[2];
-		$position = 0;
-		$iterator->next();
-		while ($iterator->valid()) {
-			$token = $iterator->current();
-			if ($token === '(') {
-				$position = 1;
-				break;
-			}
-			$iterator->next();
-		}
-		$iterator->next();
-		while ($iterator->valid()) {
-			$param = $this->extractParameter($iterator, $data);
-			if (isset($definition[$position]) && is_string($param)) {
-				$message[$definition[$position]] = $param;
-			}
-			while ($iterator->valid()) {
-				$token = $iterator->current();
-				if ($token === ',') {
-					$position++;
-					break;
-				} elseif ($token === ')') {
-					break 2;
-				}
-				$iterator->next();
-			}
-			$iterator->next();
-		}
-		if (count($message) === 1) {
+	public function enterNode(PHPParser_Node $node) {
+		$name = null;
+		if ($node instanceof PHPParser_Node_Expr_MethodCall) {
+			$name = $node->name;
+		} elseif ($node instanceof PHPParser_Node_Expr_FuncCall) {
+			$parts = $node->name->parts;
+			$name = array_pop($parts);
+		} else {
 			return;
 		}
-		foreach ($definition as $type) {
-			if (!isset($message[$type])) {
+		if (!isset($this->functions[$name])) {
+			return;
+		}
+		$this->processFunction($this->functions[$name], $node);
+	}
+
+	private function processFunction(array $definition, PHPParser_Node $node) {
+		$message = array(
+			GettextExtractor_Extractor::LINE => $node->getLine()
+		);
+		foreach ($definition as $position => $type) {
+			if (!isset($node->args[$position - 1])) {
+				return;
+			}
+			$arg = $node->args[$position - 1]->value;
+			if ($arg instanceof PHPParser_Node_Scalar_String) {
+				$message[$type] = $arg->value;
+			} elseif ($arg instanceof PHPParser_Node_Expr_Array) {
+				foreach ($arg->items as $item) {
+					if ($item->value instanceof PHPParser_Node_Scalar_String) {
+						$message[$type][] = $item->value->value;
+					}
+				}
+			} else {
 				return;
 			}
 		}
-		$data[] = $message;
+		if (is_array($message[GettextExtractor_Extractor::SINGULAR])) {
+			foreach ($message[GettextExtractor_Extractor::SINGULAR] as $value) {
+				$tmp = $message;
+				$tmp[GettextExtractor_Extractor::SINGULAR] = $value;
+				$this->data[] = $tmp;
+			}
+		} else {
+			$this->data[] = $message;
+		}
+	}
+
+	/*** PHPParser_NodeVisitor: dont need these *******************************/
+
+	public function afterTraverse(array $nodes) {
+	}
+
+	public function beforeTraverse(array $nodes) {
+	}
+
+	public function leaveNode(PHPParser_Node $node) {
 	}
 }
