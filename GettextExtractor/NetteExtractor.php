@@ -14,8 +14,6 @@
  * @package Nette Extras
  */
 
-require dirname(__FILE__) . '/GettextExtractor.php';
-
 /**
  * NetteGettextExtractor tool - designed specially for use with Nette Framework
  *
@@ -23,7 +21,7 @@ require dirname(__FILE__) . '/GettextExtractor.php';
  * @author Ondřej Vodáček
  * @package Nette Extras
  */
-class NetteGettextExtractor extends GettextExtractor {
+class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 
 	/**
 	 * Setup mandatory filters
@@ -42,6 +40,8 @@ class NetteGettextExtractor extends GettextExtractor {
 				->setFilter('phtml', 'NetteLatte')
 				->setFilter('latte', 'PHP')
 				->setFilter('latte', 'NetteLatte');
+
+		$this->addFilter('NetteLatte', new GettextExtractor_Filters_NetteLatteFilter());
 
 		$this->getFilter('PHP')
 				->addFunction('translate');

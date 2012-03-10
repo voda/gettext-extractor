@@ -14,23 +14,24 @@
  * @package Nette Extras
  */
 
-if (version_compare(PHP_VERSION, '5.2.2', '<'))
-	exit('GettextExtractor needs PHP 5.2.2 or newer');
-
-require_once dirname(__FILE__) . '/Filters/iFilter.php';
-
 /**
  * GettextExtractor tool
  *
  * @author Karel Klima
  * @author Ondřej Vodáček
  */
-class GettextExtractor {
+class GettextExtractor_Extractor {
 
 	const LOG_FILE = 'extractor.log';
 	const ESCAPE_CHARS = '"';
 	const OUTPUT_PO = 'PO';
 	const OUTPUT_POT = 'POT';
+
+	const CONTEXT = 'context';
+	const SINGULAR = 'singular';
+	const PLURAL = 'plural';
+	const LINE = 'line';
+	const FILE = 'file';
 
 	/** @var resource */
 	protected $logHandler;
@@ -40,9 +41,11 @@ class GettextExtractor {
 
 	/** @var array */
 	protected $filters = array(
-		'php' => array('PHP'),
-		'phtml' => array('PHP', 'NetteLatte')
+		'php' => array('PHP')
 	);
+
+	/** @var array */
+	protected $filterStore = array();
 
 	/** @var array */
 	protected $comments = array(
@@ -63,9 +66,6 @@ class GettextExtractor {
 	/** @var array */
 	protected $data = array();
 
-	/** @var array */
-	protected $filterStore = array();
-
 	/** @var string */
 	protected $outputMode = self::OUTPUT_PO;
 
@@ -82,6 +82,7 @@ class GettextExtractor {
 		}
 		$this->logHandler = fopen($logToFile, "w");
 		$this->setOutputMode(self::OUTPUT_POT);
+		$this->addFilter('PHP', new GettextExtractor_Filters_PHPFilter());
 	}
 
 	/**
@@ -121,7 +122,7 @@ class GettextExtractor {
 	 * Scans given files or directories and extracts gettext keys from the content
 	 *
 	 * @param string|array $resource
-	 * @return GettetExtractor
+	 * @return self
 	 */
 	public function scan($resource) {
 		$this->inputFiles = array();
@@ -196,49 +197,44 @@ class GettextExtractor {
 	/**
 	 * Gets an instance of a GettextExtractor filter
 	 *
-	 * @param string $filter
-	 * @return iFilter
+	 * @param string $filterName
+	 * @return GettextExtractor_Filters_IFilter
 	 */
-	public function getFilter($filter) {
-		$filter = $filter.'Filter';
-
-		if (isset($this->filterStore[$filter]))
-			return $this->filterStore[$filter];
-
-		if (!class_exists($filter)) {
-			$filter_file = dirname(__FILE__).'/Filters/'.$filter.".php";
-			if (!file_exists($filter_file)) {
-				$this->throwException('ERROR: Filter file '.$filter_file.' not found');
-			}
-			require_once $filter_file;
-			if (!class_exists($filter)) {
-				$this->throwException('ERROR: Class '.$filter.' not found');
-			}
+	public function getFilter($filterName) {
+		if (isset($this->filterStore[$filterName])) {
+			return $this->filterStore[$filterName];
 		}
-
-		$this->filterStore[$filter] = new $filter;
-		$this->log('Filter '.$filter.' loaded');
-		return $this->filterStore[$filter];
+		$this->throwException("ERROR: Filter '$filterName' not found.");
 	}
 
 	/**
 	 * Assigns a filter to an extension
 	 *
 	 * @param string $extension
-	 * @param string $filter
-	 * @return GettextExtractor
+	 * @param string $filterName
+	 * @return self
 	 */
-	public function setFilter($extension, $filter) {
-		if (isset($this->filters[$extension]) && in_array($filter, $this->filters[$extension]))
+	public function setFilter($extension, $filterName) {
+		if (isset($this->filters[$extension]) && in_array($filterName, $this->filters[$extension]))
 			return $this;
-		$this->filters[$extension][] = $filter;
+		$this->filters[$extension][] = $filterName;
 		return $this;
+	}
+
+	/**
+	 * Add a filter object
+	 *
+	 * @param type $filterName
+	 * @param GettextExtractor_Filters_IFilter $filter
+	 */
+	public function addFilter($filterName, GettextExtractor_Filters_IFilter $filter) {
+		$this->filterStore[$filterName] = $filter;
 	}
 
 	/**
 	 * Removes all filter settings in case we want to define a brand new one
 	 *
-	 * @return GettextExtractor
+	 * @return self
 	 */
 	public function removeAllFilters() {
 		$this->filters = array();
@@ -249,7 +245,7 @@ class GettextExtractor {
 	 * Adds a comment to the top of the output file
 	 *
 	 * @param string $value
-	 * @return GettextExtractor
+	 * @return self
 	 */
 	public function addComment($value) {
 		$this->comments[] = $value;
@@ -270,7 +266,7 @@ class GettextExtractor {
 	 *
 	 * @param string $key
 	 * @param string $value
-	 * @return GettextExtractor
+	 * @return self
 	 */
 	public function setMeta($key, $value) {
 		$this->meta[$key] = $value;
@@ -282,7 +278,7 @@ class GettextExtractor {
 	 *
 	 * @param string $outputFile
 	 * @param array $data
-	 * @return GettextExtractor
+	 * @return self
 	 */
 	public function save($outputFile, $data = null) {
 		$data = $data ? $data : $this->data;
@@ -325,14 +321,14 @@ class GettextExtractor {
 
 		foreach ($data as $message) {
 			foreach ($message['files'] as $file) {
-				$output[] = '#: '.$file[iFilter::FILE].':'.$file[iFilter::LINE];
+				$output[] = '#: '.$file[self::FILE].':'.$file[self::LINE];
 			}
-			if (isset($message[iFilter::CONTEXT])) {
-				$output[] = $this->formatMessage($message[iFilter::CONTEXT], "msgctxt");
+			if (isset($message[self::CONTEXT])) {
+				$output[] = $this->formatMessage($message[self::CONTEXT], "msgctxt");
 			}
-			$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgid');
-			if (isset($message[iFilter::PLURAL])) {
-				$output[] = $this->formatMessage($message[iFilter::PLURAL], 'msgid_plural');
+			$output[] = $this->formatMessage($message[self::SINGULAR], 'msgid');
+			if (isset($message[self::PLURAL])) {
+				$output[] = $this->formatMessage($message[self::PLURAL], 'msgid_plural');
 				switch ($this->outputMode) {
 					case self::OUTPUT_POT:
 						$output[] = 'msgstr[0] ""';
@@ -341,8 +337,8 @@ class GettextExtractor {
 					case self::OUTPUT_PO:
 					// fallthrough
 					default:
-						$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgstr[0]');
-						$output[] = $this->formatMessage($message[iFilter::PLURAL], 'msgstr[1]');
+						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr[0]');
+						$output[] = $this->formatMessage($message[self::PLURAL], 'msgstr[1]');
 				}
 			} else {
 				switch ($this->outputMode) {
@@ -352,7 +348,7 @@ class GettextExtractor {
 					case self::OUTPUT_PO:
 					// fallthrough
 					default:
-						$output[] = $this->formatMessage($message[iFilter::SINGULAR], 'msgstr');
+						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr');
 				}
 			}
 
@@ -388,27 +384,27 @@ class GettextExtractor {
 	protected function addMessages(array $messages, $file) {
 		foreach ($messages as $message) {
 			$key = '';
-			if (isset($message[iFilter::CONTEXT])) {
-				$key .= $message[iFilter::CONTEXT];
+			if (isset($message[self::CONTEXT])) {
+				$key .= $message[self::CONTEXT];
 			}
 			$key .= chr(4);
-			$key .= $message[iFilter::SINGULAR];
+			$key .= $message[self::SINGULAR];
 			$key .= chr(4);
-			if (isset($message[iFilter::PLURAL])) {
-				$key .= $message[iFilter::PLURAL];
+			if (isset($message[self::PLURAL])) {
+				$key .= $message[self::PLURAL];
 			}
 			if ($key === chr(4).chr(4)) {
 				continue;
 			}
-			$line = $message[iFilter::LINE];
+			$line = $message[self::LINE];
 			if (!isset($this->data[$key])) {
-				unset($message[iFilter::LINE]);
+				unset($message[self::LINE]);
 				$this->data[$key] = $message;
 				$this->data[$key]['files'] = array();
 			}
 			$this->data[$key]['files'][] = array(
-				iFilter::FILE => $file,
-				iFilter::LINE => $line
+				self::FILE => $file,
+				self::LINE => $line
 			);
 		}
 	}

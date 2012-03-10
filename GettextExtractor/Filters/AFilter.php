@@ -13,14 +13,12 @@
  * @package Nette Extras
  */
 
-require_once dirname(__FILE__) . '/iFilter.php';
-
 /**
  * Abstract filter class.
  *
  * @author Ondřej Vodáček
  */
-abstract class AFilter {
+abstract class GettextExtractor_Filters_AFilter {
 
 	/** @var array */
 	protected $functions = array();
@@ -39,19 +37,19 @@ abstract class AFilter {
 			throw new InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
 		}
 	    $function = array(
-			$singular => iFilter::SINGULAR
+			$singular => GettextExtractor_Extractor::SINGULAR
 		);
 		if ($plural !== null) {
 			if (!is_int($plural) || $plural <= 0) {
 				throw new InvalidArgumentException('Invalid argument type or value given for paramater $plural.');
 			}
-			$function[$plural] = iFilter::PLURAL;
+			$function[$plural] = GettextExtractor_Extractor::PLURAL;
 		}
 		if ($context !== null) {
 			if (!is_int($context) || $context <= 0) {
 				throw new InvalidArgumentException('Invalid argument type or value given for paramater $context.');
 			}
-			$function[$context] = iFilter::CONTEXT;
+			$function[$context] = GettextExtractor_Extractor::CONTEXT;
 		}
 		$this->functions[$functionName] = $function;
 		return $this;

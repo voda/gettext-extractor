@@ -19,13 +19,7 @@
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-interface iFilter {
-
-	const CONTEXT = 'context';
-	const SINGULAR = 'singular';
-	const PLURAL = 'plural';
-	const LINE = 'line';
-	const FILE = 'file';
+interface GettextExtractor_Filters_IFilter {
 
 	/**
 	 * Extracts gettext phrases from a file

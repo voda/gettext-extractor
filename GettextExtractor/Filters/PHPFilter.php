@@ -10,15 +10,12 @@
  * @package Nette Extras
  */
 
-require_once dirname(__FILE__) . '/iFilter.php';
-require_once dirname(__FILE__) . '/AFilter.php';
-
 /**
  * Filter to fetch gettext phrases from PHP functions
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-class PHPFilter extends AFilter implements iFilter {
+class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter {
 
 	public function __construct() {
 		$this->addFunction('gettext', 1);
@@ -108,7 +105,7 @@ class PHPFilter extends AFilter implements iFilter {
 		$token = $iterator->current();
 		$definition = isset($this->functions[$token[1]]) ? $this->functions[$token[1]] : array();
 		$message = array();
-		$message[self::LINE] = $token[2];
+		$message[GettextExtractor_Extractor::LINE] = $token[2];
 		$position = 0;
 		$iterator->next();
 		while ($iterator->valid()) {

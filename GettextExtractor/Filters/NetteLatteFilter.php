@@ -14,15 +14,12 @@
  * @package Nette Extras
  */
 
-require_once dirname(__FILE__) . '/iFilter.php';
-require_once dirname(__FILE__) . '/AFilter.php';
-
 /**
  * Filter to parse curly brackets syntax in Nette Framework templates
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-class NetteLatteFilter extends AFilter implements iFilter {
+class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter {
 
 	/** @internal single & double quoted PHP string, from Nette\Templates\LatteFilter */
 	const RE_STRING = '\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"';
@@ -125,7 +122,7 @@ class NetteLatteFilter extends AFilter implements iFilter {
 					}
 				}
 				$result = array(
-					iFilter::LINE => $line + 1
+					GettextExtractor_Extractor::LINE => $line + 1
 				);
 				foreach ($prefix as $position => $type) {
 					if (!isset($params[$position]) || !$this->isStaticString($params[$position])) {
