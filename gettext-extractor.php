@@ -10,7 +10,7 @@
  * @package Nette Extras
  */
 
-require dirname(__FILE__) . '/NetteGettextExtractor.php';
+require __DIR__.'/vendor/.composer/autoload.php';
 
 $output = 'php://stdout';
 $log = 'php://stderr';
@@ -93,7 +93,7 @@ if (isset($options['m'])) {
 	}
 }
 
-$extractor = new NetteGettextExtractor($log);
+$extractor = new GettextExtractor_NetteExtractor($log);
 $extractor->setupForms()->setupDataGrid();
 if ($keywords !== null) {
 	foreach ($keywords as $value) {

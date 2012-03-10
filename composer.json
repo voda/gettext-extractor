@@ -1,0 +1,16 @@
+{
+    "name": "voda/gettext-extractor",
+    "description": "tool for extracting gettext messages",
+    "authors": [
+        {"name": "Ondřej Vodáček", "email": "ondrej.vodacek@gmail.com"},
+        {"name": "Karel Klima"}
+    ],
+	"keywords":["gettext", "l10n"],
+	"license": "BSD-3",
+    "require": {
+        "php": ">=5.2.2"
+    },
+	"autoload": {
+		"psr-0": {"GettextExtractor" : ""}
+	}
+}
