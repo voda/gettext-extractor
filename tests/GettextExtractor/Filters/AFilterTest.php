@@ -18,7 +18,7 @@ class GettextExtractor_Filters_AFilterTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider dataProvider_AddingFunctionWithInvalidParamter
 	 */
 	public function testAddingFunctionWithInvalidParamter($s, $p, $c) {
-		$this->object->addFunction('funcrion', $s, $p, $c);
+		$this->object->addFunction('function', $s, $p, $c);
 	}
 	public static function dataProvider_AddingFunctionWithInvalidParamter() {
 		return array(
@@ -30,29 +30,7 @@ class GettextExtractor_Filters_AFilterTest extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-
 	public function testAddFunction() {
-		$this->object->addFunction('funcrion', 1, 2, 3);
-	}
-
-
-	/**
-	 * @todo Implement testRemoveFunction().
-	 */
-	public function testRemoveFunction() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * @todo Implement testRemoveAllFunctions().
-	 */
-	public function testRemoveAllFunctions() {
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-				'This test has not been implemented yet.'
-		);
+		$this->object->addFunction('function', 1, 2, 3);
 	}
 }
