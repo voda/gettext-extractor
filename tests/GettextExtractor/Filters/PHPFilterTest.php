@@ -105,6 +105,9 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		),$messages);
 	}
 
+	/**
+	 * @group bug5
+	 */
 	public function testArrayWithTranslationsAsParameter() {
 		$this->object->addFunction('addSelect', 3);
 		$messages = $this->object->extract($this->file);
@@ -116,6 +119,24 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 26,
 			GettextExtractor_Extractor::SINGULAR => "item 2"
+		),$messages);
+	}
+
+	/**
+	 * @group bug3
+	 */
+	public function testMultipleMessagesFromSingleFunction() {
+		$this->object->addFunction('bar', 1);
+		$this->object->addFunction('bar', 2);
+		$messages = $this->object->extract($this->file);
+
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 30,
+			GettextExtractor_Extractor::SINGULAR => "Value A"
+		),$messages);
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 30,
+			GettextExtractor_Extractor::SINGULAR => "Value B"
 		),$messages);
 	}
 }

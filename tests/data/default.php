@@ -27,3 +27,4 @@ $form->addSelect('name', 'label', array(
 	'item 1',
 	'item 2'
 ));
+$foo->bar('Value A', 'Value B');
