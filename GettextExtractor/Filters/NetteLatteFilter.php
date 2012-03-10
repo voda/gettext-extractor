@@ -110,7 +110,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 				 * $message[2] = 1. parameter
 				 * $message[3] = additional parameters
 				 */
-				$prefix = $this->functions[$message[1]];
+				$prefix = $this->functions[$message[1]][0];
 				$params = array(
 					1 => $message[2]
 				);

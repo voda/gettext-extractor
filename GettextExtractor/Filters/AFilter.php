@@ -51,7 +51,7 @@ abstract class GettextExtractor_Filters_AFilter {
 			}
 			$function[$context] = GettextExtractor_Extractor::CONTEXT;
 		}
-		$this->functions[$functionName] = $function;
+		$this->functions[$functionName][] = $function;
 		return $this;
 	}
 

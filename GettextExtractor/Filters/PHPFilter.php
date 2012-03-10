@@ -60,7 +60,9 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 		if (!isset($this->functions[$name])) {
 			return;
 		}
-		$this->processFunction($this->functions[$name], $node);
+		foreach ($this->functions[$name] as $definition) {
+			$this->processFunction($definition, $node);
+		}
 	}
 
 	private function processFunction(array $definition, PHPParser_Node $node) {
