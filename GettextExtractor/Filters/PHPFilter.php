@@ -49,9 +49,9 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 
 	public function enterNode(PHPParser_Node $node) {
 		$name = null;
-		if ($node instanceof PHPParser_Node_Expr_MethodCall) {
+		if ($node instanceof PHPParser_Node_Expr_MethodCall && is_string($node->name)) {
 			$name = $node->name;
-		} elseif ($node instanceof PHPParser_Node_Expr_FuncCall) {
+		} elseif ($node instanceof PHPParser_Node_Expr_FuncCall && $node->name instanceof PHPParser_Node_Name) {
 			$parts = $node->name->parts;
 			$name = array_pop($parts);
 		} else {

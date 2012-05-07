@@ -139,4 +139,8 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 			GettextExtractor_Extractor::SINGULAR => "Value B"
 		),$messages);
 	}
+
+	public function testCallable() {
+		$this->object->extract(dirname(__FILE__) . '/../../data/callable.php');
+	}
 }
