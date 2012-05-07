@@ -143,4 +143,13 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 	public function testCallable() {
 		$this->object->extract(dirname(__FILE__) . '/../../data/callable.php');
 	}
+
+	public function testStaticFunctions() {
+		$messages = $this->object->extract($this->file);
+
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 31,
+			GettextExtractor_Extractor::SINGULAR => "Static function"
+		),$messages);
+	}
 }

@@ -28,3 +28,4 @@ $form->addSelect('name', 'label', array(
 	'item 2'
 ));
 $foo->bar('Value A', 'Value B');
+Translator::gettext('Static function');
