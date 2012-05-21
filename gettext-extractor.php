@@ -10,7 +10,7 @@
  * @package Nette Extras
  */
 
-require __DIR__.'/vendor/.composer/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
 $output = 'php://stdout';
 $log = 'php://stderr';
