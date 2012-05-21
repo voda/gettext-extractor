@@ -37,8 +37,8 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 	 */
 	public function extract($file) {
 		$this->data = array();
-		$parser = new PHPParser_Parser();
-		$stmts = $parser->parse(new PHPParser_Lexer(file_get_contents($file)));
+		$parser = new PHPParser_Parser(new PHPParser_Lexer());
+		$stmts = $parser->parse(file_get_contents($file));
 		$traverser = new PHPParser_NodeTraverser();
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
