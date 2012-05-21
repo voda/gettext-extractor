@@ -9,7 +9,7 @@
 	"license": "BSD-3",
 	"require": {
 		"php": ">=5.2.2",
-		"nikic/php-parser": "dev-master"
+		"nikic/php-parser": "0.9.1"
 	},
 	"autoload": {
 		"psr-0": {"GettextExtractor" : ""}
