@@ -33,7 +33,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	const RE_VARIABLE = '\$__IDENTIFIER__(?:__KEY__)*(?:__ARGS__)?(?:->__FUNCTION__)?'; // It's possible to access multidimensional array, variable functions and objects' fluent interface
 	const RE_STATIC = '__IDENTIFIER__(?:::(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__))?';
 
-	const RE_MODIFIER = '\\|[^|}]+';
+	const RE_MODIFIER = '\\s*\|[^|}]+';
 
 	const RE_NUMBER = '\d+';
 
@@ -157,7 +157,6 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 				self::$regexForParam
 			);
 		}
-
 		return self::$regexForParam;
 	}
 
