@@ -1,8 +1,6 @@
 <?php
 
 /**
- * Description of FilterTest
- *
  * @author Ondřej Vodáček
  */
 abstract class GettextExtractor_Filters_FilterTest extends PHPUnit_Framework_TestCase {
@@ -42,5 +40,4 @@ abstract class GettextExtractor_Filters_FilterTest extends PHPUnit_Framework_Tes
 			GettextExtractor_Extractor::CONTEXT => 'context'
 		), $messages);
 	}
-
 }

@@ -19,20 +19,20 @@ class GettextExtractor_Filters_NetteLatteFilterTest extends GettextExtractor_Fil
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 7,
 			GettextExtractor_Extractor::SINGULAR => '$foo'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 8,
 			GettextExtractor_Extractor::SINGULAR => '$bar',
 			GettextExtractor_Extractor::CONTEXT => 'context'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 9,
 			GettextExtractor_Extractor::SINGULAR => 'I see %d little indian!',
 			GettextExtractor_Extractor::PLURAL => 'I see %d little indians!',
 			GettextExtractor_Extractor::CONTEXT => '$baz'
-		),$messages);
+		), $messages);
 	}
 
 	public function testConstantsArrayMethodsAndFunctions() {
@@ -41,56 +41,56 @@ class GettextExtractor_Filters_NetteLatteFilterTest extends GettextExtractor_Fil
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 1,
 			GettextExtractor_Extractor::SINGULAR => 'Testovaci retezec'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 3,
 			GettextExtractor_Extractor::SINGULAR => '69'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 4,
 			GettextExtractor_Extractor::SINGULAR => 'CONSTANT'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 5,
 			GettextExtractor_Extractor::SINGULAR => 'Class::CONSTANT'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 6,
 			GettextExtractor_Extractor::SINGULAR => 'Class::method()'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 7,
 			GettextExtractor_Extractor::SINGULAR => '$array[0]'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 8,
 			GettextExtractor_Extractor::SINGULAR => '$varFunc()'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 9,
 			GettextExtractor_Extractor::SINGULAR => '$object->method()'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 10,
 			GettextExtractor_Extractor::SINGULAR => 'function()'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 11,
 			GettextExtractor_Extractor::SINGULAR => 'function()->fluent()'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 12,
 			GettextExtractor_Extractor::SINGULAR => 'Class::$var[0][\'key\']($arg)->method()->method()'
-		),$messages);
+		), $messages);
 	}
 }

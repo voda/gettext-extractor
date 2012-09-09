@@ -28,7 +28,7 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 	 *
 	 * @param string|bool $logToFile
 	 */
-	public function __construct($logToFile = FALSE) {
+	public function __construct($logToFile = false) {
 		parent::__construct($logToFile);
 
 		// Clean up...

@@ -20,18 +20,18 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 7
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 8,
 			GettextExtractor_Extractor::CONTEXT => 'context'
-		),$messages);
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 9,
 			GettextExtractor_Extractor::SINGULAR => 'I see %d little indian!',
 			GettextExtractor_Extractor::PLURAL => 'I see %d little indians!'
-		),$messages);
+		), $messages);
 	}
 
 	public function testNestedFunctions() {
@@ -40,41 +40,41 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 11,
 			GettextExtractor_Extractor::SINGULAR => 'Some string.'
-		),$messages);
+		), $messages);
 
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 12,
 			GettextExtractor_Extractor::SINGULAR => 'Nested function.'
-		),$messages);
+		), $messages);
 
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 13,
 			GettextExtractor_Extractor::SINGULAR => 'Nested function 2.',
 			GettextExtractor_Extractor::CONTEXT => 'context'
-		),$messages);
+		), $messages);
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 13,
 			GettextExtractor_Extractor::SINGULAR => 'context'
-		),$messages);
+		), $messages);
 
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 14,
 			GettextExtractor_Extractor::SINGULAR => "%d meeting wasn't imported.",
 			GettextExtractor_Extractor::PLURAL => "%d meetings weren't importeded."
-		),$messages);
+		), $messages);
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 14,
 			GettextExtractor_Extractor::SINGULAR => "%d meeting wasn't imported."
-		),$messages);
+		), $messages);
 
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 17,
 			GettextExtractor_Extractor::SINGULAR => "Please provide a text 2."
-		),$messages);
+		), $messages);
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 18,
 			GettextExtractor_Extractor::SINGULAR => "Please provide a text 3."
-		),$messages);
+		), $messages);
 	}
 
 	public function testConstantAsParameter() {
@@ -83,7 +83,7 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 16,
 			GettextExtractor_Extractor::SINGULAR => "Please provide a text."
-		),$messages);
+		), $messages);
 	}
 
 	public function testMessageWithNewlines() {
@@ -92,7 +92,7 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 22,
 			GettextExtractor_Extractor::SINGULAR => "A\nmessage!"
-		),$messages);
+		), $messages);
 	}
 
 	public function testArrayAsParameter() {
@@ -102,7 +102,7 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 25,
 			GettextExtractor_Extractor::SINGULAR => "Really delete?"
-		),$messages);
+		), $messages);
 	}
 
 	/**
@@ -115,11 +115,11 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 26,
 			GettextExtractor_Extractor::SINGULAR => "item 1"
-		),$messages);
+		), $messages);
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 26,
 			GettextExtractor_Extractor::SINGULAR => "item 2"
-		),$messages);
+		), $messages);
 	}
 
 	/**
@@ -133,11 +133,11 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 30,
 			GettextExtractor_Extractor::SINGULAR => "Value A"
-		),$messages);
+		), $messages);
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 30,
 			GettextExtractor_Extractor::SINGULAR => "Value B"
-		),$messages);
+		), $messages);
 	}
 
 	public function testCallable() {
@@ -150,6 +150,6 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$this->assertContains(array(
 			GettextExtractor_Extractor::LINE => 31,
 			GettextExtractor_Extractor::SINGULAR => "Static function"
-		),$messages);
+		), $messages);
 	}
 }

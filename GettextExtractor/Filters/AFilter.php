@@ -36,7 +36,7 @@ abstract class GettextExtractor_Filters_AFilter {
 		if (!is_int($singular) || $singular <= 0) {
 			throw new InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
 		}
-	    $function = array(
+		$function = array(
 			$singular => GettextExtractor_Extractor::SINGULAR
 		);
 		if ($plural !== null) {
@@ -62,7 +62,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * @return AFilter
 	 */
 	public function removeFunction($functionName) {
-	    unset($this->functions[$functionName]);
+		unset($this->functions[$functionName]);
 		return $this;
 	}
 
@@ -72,7 +72,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * @return AFilter
 	 */
 	public function removeAllFunctions() {
-	    $this->functions = array();
+		$this->functions = array();
 		return $this;
 	}
 
@@ -83,10 +83,9 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * @author Matěj Humpál (https://github.com/finwe)
 	 */
 	protected function fixEscaping($string) {
-	    $prime = substr($string, 0, 1);
-	    $string = str_replace('\\' . $prime, $prime, $string);
-
-	    return $string;
+		$prime = substr($string, 0, 1);
+		$string = str_replace('\\' . $prime, $prime, $string);
+		return $string;
 	}
 
 	/**
@@ -96,7 +95,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * @return string
 	 */
 	protected function stripQuotes($string) {
-	    $prime = substr($string, 0, 1);
+		$prime = substr($string, 0, 1);
 		if ($prime === "'" || $prime === '"') {
 			if (substr($string, -1, 1) === $prime) {
 				$string = substr($string, 1, -1);

@@ -40,7 +40,6 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	/** @link http://doc.nette.org/cs/rozsireni-lattefilter */
 	const RE_TAG = '\{(__MACRO__)\s*(__PARAM__)((?:,\s*__PARAM__)+)?(?:__MODIFIER__)*\}';
 
-
 	protected static $regexForParam;
 
 	/** @var array */
@@ -91,8 +90,9 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	 * @return array
 	 */
 	public function extract($file) {
-		if (count($this->functions) === 0)
+		if (count($this->functions) === 0) {
 			return;
+		}
 		$data = array();
 
 		$regex = $this->createRegex(array_keys($this->functions));
@@ -193,7 +193,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	 * @return bool
 	 */
 	private function isStaticString($string) {
-		$prime = substr($string,0,1);
+		$prime = substr($string, 0, 1);
 		if (($prime === "'" || $prime === '"') && substr($string, -1, 1) === $prime) {
 			return true;
 		}

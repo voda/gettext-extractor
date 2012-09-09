@@ -89,8 +89,9 @@ class GettextExtractor_Extractor {
 	 * Close the log hangdler if needed
 	 */
 	public function __destruct() {
-		if (is_resource($this->logHandler))
+		if (is_resource($this->logHandler)) {
 			fclose($this->logHandler);
+		}
 	}
 
 	/**
@@ -126,8 +127,9 @@ class GettextExtractor_Extractor {
 	 */
 	public function scan($resource) {
 		$this->inputFiles = array();
-		if (!is_array($resource))
+		if (!is_array($resource)) {
 			$resource = array($resource);
+		}
 		foreach ($resource as $item) {
 			$this->log("Scanning '$item'");
 			$this->_scan($item);
@@ -178,8 +180,9 @@ class GettextExtractor_Extractor {
 			$fileExtension = pathinfo($inputFile, PATHINFO_EXTENSION);
 			foreach ($this->filters as $extension => $filters) {
 				// Check file extension
-				if ($fileExtension !== $extension)
+				if ($fileExtension !== $extension) {
 					continue;
+				}
 
 				$this->log('Processing file '.$inputFile);
 
@@ -215,8 +218,9 @@ class GettextExtractor_Extractor {
 	 * @return self
 	 */
 	public function setFilter($extension, $filterName) {
-		if (isset($this->filters[$extension]) && in_array($filterName, $this->filters[$extension]))
+		if (isset($this->filters[$extension]) && in_array($filterName, $this->filters[$extension])) {
 			return $this;
+		}
 		$this->filters[$extension][] = $filterName;
 		return $this;
 	}
@@ -258,7 +262,7 @@ class GettextExtractor_Extractor {
 	 * @param string $key
 	 */
 	public function getMeta($key) {
-		return isset($this->meta[$key]) ? $this->meta[$key] : NULL;
+		return isset($this->meta[$key]) ? $this->meta[$key] : null;
 	}
 
 	/**
@@ -334,8 +338,7 @@ class GettextExtractor_Extractor {
 						$output[] = 'msgstr[0] ""';
 						$output[] = 'msgstr[1] ""';
 						break;
-					case self::OUTPUT_PO:
-					// fallthrough
+					case self::OUTPUT_PO: // fallthrough
 					default:
 						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr[0]');
 						$output[] = $this->formatMessage($message[self::PLURAL], 'msgstr[1]');
@@ -345,8 +348,7 @@ class GettextExtractor_Extractor {
 					case self::OUTPUT_POT:
 						$output[] = 'msgstr ""';
 						break;
-					case self::OUTPUT_PO:
-					// fallthrough
+					case self::OUTPUT_PO: // fallthrough
 					default:
 						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr');
 				}
@@ -412,6 +414,6 @@ class GettextExtractor_Extractor {
 	protected function formatMessage($message, $prefix = null) {
 		$message = $this->addSlashes($message);
 		$message = '"' . str_replace("\n", "\\n\"\n\"", $message) . '"';
-		return ($prefix ? $prefix.' ' : '') . $message;;
+		return ($prefix ? $prefix.' ' : '') . $message;
 	}
 }
