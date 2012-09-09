@@ -6,7 +6,7 @@
 		{"name": "Karel Klima"}
 	],
 	"keywords":["gettext", "l10n"],
-	"license": "BSD-3",
+	"license": "BSD-3-Clause",
 	"require": {
 		"php": ">=5.2.2",
 		"nikic/php-parser": ">=0.9.2"
