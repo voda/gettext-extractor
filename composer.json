@@ -13,5 +13,8 @@
 	},
 	"autoload": {
 		"psr-0": {"GettextExtractor" : ""}
-	}
+	},
+	"bin": [
+		"gettext-extractor.php"
+	]
 }
