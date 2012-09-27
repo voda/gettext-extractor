@@ -141,7 +141,8 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 	}
 
 	public function testCallable() {
-		$this->object->extract(dirname(__FILE__) . '/../../data/callable.php');
+		$messages = $this->object->extract(dirname(__FILE__) . '/../../data/callable.php');
+		$this->assertEmpty($messages);
 	}
 
 	public function testStaticFunctions() {

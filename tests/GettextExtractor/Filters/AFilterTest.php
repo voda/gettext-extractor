@@ -29,8 +29,4 @@ class GettextExtractor_Filters_AFilterTest extends PHPUnit_Framework_TestCase {
 			array(-2, null, null)
 		);
 	}
-
-	public function testAddFunction() {
-		$this->object->addFunction('function', 1, 2, 3);
-	}
 }
