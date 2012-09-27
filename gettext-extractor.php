@@ -10,7 +10,11 @@
  * @package Nette Extras
  */
 
-require __DIR__.'/vendor/autoload.php';
+foreach (array('vendor', '../..') as $path) {
+	if (file_exists($file = __DIR__ . "/$path/autoload.php")) {
+		require $file;
+	}
+}
 
 $output = 'php://stdout';
 $log = 'php://stderr';
