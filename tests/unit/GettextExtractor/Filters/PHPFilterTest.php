@@ -153,4 +153,13 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 			GettextExtractor_Extractor::SINGULAR => "Static function"
 		), $messages);
 	}
+
+	/**
+	 * @group bug11
+	 */
+	public function testNoMessagesInArray() {
+		$this->object->addFunction('translateArray');
+		$messages = $this->object->extract(dirname(__FILE__) . '/../../data/bug11.php');
+		$this->assertEmpty($messages);
+	}
 }

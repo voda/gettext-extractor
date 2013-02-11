@@ -82,6 +82,9 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 						$message[$type][] = $item->value->value;
 					}
 				}
+				if (count($message) === 1) { // line only
+					return;
+				}
 			} else {
 				return;
 			}
