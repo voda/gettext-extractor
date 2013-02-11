@@ -11,6 +11,6 @@
 			strict="true"
 			verbose="true">
 	<testsuite>
-		<directory>tests</directory>
+		<directory>tests/unit</directory>
 	</testsuite>
 </phpunit>
