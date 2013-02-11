@@ -64,7 +64,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	 * @param $singular int
 	 * @param $plural int|null
 	 * @param $context int|null
-	 * @return NetteLatteFilter
+	 * @return self
 	 */
 	public function addPrefix($prefix, $singular = 1, $plural = null, $context = null) {
 		parent::addFunction($prefix, $singular, $plural, $context);
@@ -76,7 +76,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	 * Alias for AFilter::removeFunction
 	 *
 	 * @param string $prefix
-	 * @return NetteLatteFilter
+	 * @return self
 	 */
 	public function removePrefix($prefix) {
 		parent::removeFunction($prefix);

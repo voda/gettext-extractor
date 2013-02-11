@@ -30,7 +30,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * @param $singular int
 	 * @param $plural int|null
 	 * @param $context int|null
-	 * @return AFilter
+	 * @return self
 	 */
 	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
 		if (!is_int($singular) || $singular <= 0) {
@@ -59,7 +59,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	 * Excludes a function from the function list
 	 *
 	 * @param $functionName
-	 * @return AFilter
+	 * @return self
 	 */
 	public function removeFunction($functionName) {
 		unset($this->functions[$functionName]);
@@ -69,7 +69,7 @@ abstract class GettextExtractor_Filters_AFilter {
 	/**
 	 * Excludes all functions from the function list
 	 *
-	 * @return AFilter
+	 * @return self
 	 */
 	public function removeAllFunctions() {
 		$this->functions = array();
