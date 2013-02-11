@@ -54,6 +54,7 @@ class GettextExtractor_Extractor {
 
 	/** @var array */
 	protected $meta = array(
+		"POT-Creation-Date" => "",
 		"PO-Revision-Date" => "YEAR-MO-DA HO:MI+ZONE",
 		"Last-Translator" => "FULL NAME <EMAIL@ADDRESS>",
 		"Language-Team" => "LANGUAGE <LL@li.org>",
@@ -83,6 +84,7 @@ class GettextExtractor_Extractor {
 		$this->logHandler = fopen($logToFile, "w");
 		$this->setOutputMode(self::OUTPUT_POT);
 		$this->addFilter('PHP', new GettextExtractor_Filters_PHPFilter());
+		$this->setMeta('POT-Creation-Date', date('c'));
 	}
 
 	/**
@@ -317,7 +319,6 @@ class GettextExtractor_Extractor {
 		$output[] = '#, fuzzy';
 		$output[] = 'msgid ""';
 		$output[] = 'msgstr ""';
-		$output[] = '"POT-Creation-Date: '.date('c').'\n"';
 		foreach ($this->meta as $key => $value) {
 			$output[] = '"'.$key.': '.$value.'\n"';
 		}
