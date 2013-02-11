@@ -64,7 +64,7 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 				->addFunction('addButton', 2)
 				->addFunction('addCheckbox', 2)
 				->addFunction('addError')
-				->addFunction('addFile', 2)
+				->addFunction('addFile', 2) // Nette 0.9
 				->addFunction('addGroup')
 				->addFunction('addImage', 3)
 				->addFunction('addMultiSelect', 2)
@@ -78,7 +78,9 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 				->addFunction('addSubmit', 2)
 				->addFunction('addText', 2)
 				->addFunction('addTextArea', 2)
+				->addFunction('addUpload', 2) // Nette 2.0
 				->addFunction('setRequired')
+				->addFunction('setDefaultValue')
 				->addFunction('skipFirst')
 				->addFunction('addProtection');
 
