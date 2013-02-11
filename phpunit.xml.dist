@@ -12,5 +12,6 @@
 			verbose="true">
 	<testsuite>
 		<directory>tests/unit</directory>
+		<directory>tests/integration</directory>
 	</testsuite>
 </phpunit>
