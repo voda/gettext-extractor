@@ -102,4 +102,16 @@ class GettextExtractor_Filters_NetteLatteFilterTest extends GettextExtractor_Fil
 			GettextExtractor_Extractor::SINGULAR => 'Class::$var[0][\'key\']($arg)->method()->method()'
 		), $messages);
 	}
+
+	/**
+	 * @group bug6
+	 */
+	public function testExtractMultilineMessage() {
+		$messages = $this->object->extract(dirname(__FILE__) . '/../../data/bug6.latte');
+
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 1,
+			GettextExtractor_Extractor::SINGULAR => "A\nmultiline\nmessage!"
+		), $messages);
+	}
 }
