@@ -11,7 +11,6 @@
  * @copyright Copyright (c) 2009 Karel Klima
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
- * @package Nette Extras
  */
 
 /**
@@ -19,7 +18,6 @@
  *
  * @author Karel Klima
  * @author Ondřej Vodáček
- * @package Nette Extras
  */
 class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 

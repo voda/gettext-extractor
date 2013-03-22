@@ -11,7 +11,6 @@
  * @copyright Copyright (c) 2009 Karel Klima
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
- * @package Nette Extras
  */
 
 /**

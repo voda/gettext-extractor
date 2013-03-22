@@ -6,7 +6,6 @@
  *
  * @copyright Copyright (c) 2012 Ondřej Vodáček
  * @license New BSD License
- * @package Nette Extras
  */
 
 /**
