@@ -21,30 +21,6 @@
  */
 class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter {
 
-	/** @internal single & double quoted PHP string, from Nette\Templates\LatteFilter */
-	const RE_STRING = '\'(?:\\\\.|[^\'\\\\])*\'|"(?:\\\\.|[^"\\\\])*"';
-
-	/** @internal PHP identifier, from Nette\Templates\LatteFilter */
-	const RE_IDENTIFIER = '[_a-zA-Z\x7F-\xFF][_a-zA-Z0-9\x7F-\xFF]*';
-
-	const RE_ARGS = '\(.*?\)';
-	const RE_FUNCTION = '__IDENTIFIER____ARGS__(?:->__IDENTIFIER____ARGS__)*'; // Function can return object, so fluent interface is applicable
-	const RE_KEY = '\[.*?\]';
-	const RE_VARIABLE = '\$__IDENTIFIER__(?:__KEY__)*(?:__ARGS__)?(?:->(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__)*)?'; // It's possible to access multidimensional array, variable functions and objects' fluent interface
-	const RE_STATIC = '__IDENTIFIER__(?:::(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__))?';
-
-	const RE_MODIFIER = '\\s*\|[^|}]+';
-
-	const RE_NUMBER = '\d+';
-
-	/** @link http://doc.nette.org/cs/rozsireni-lattefilter */
-	const RE_TAG = '\{(__MACRO__)\s*(__PARAM__)((?:,\s*__PARAM__)+)?(?:__MODIFIER__)*\}';
-
-	protected static $regexForParam;
-
-	/** @var array */
-	protected $prefixes = array();
-
 	public function __construct() {
 		$this->addFunction('_');
 		$this->addFunction('!_');
@@ -95,109 +71,86 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 		}
 		$data = array();
 
-		$regex = $this->createRegex(array_keys($this->functions));
-		$paramsRegex = '/,\s*(__PARAM__)/';
-		$paramsRegex = str_replace('__PARAM__', $this->createRegexForParam(), $paramsRegex);
+		$latteParser = new \Latte\Parser();
+		$tokens = $latteParser->parse(file_get_contents($file));
 
-		// parse file by lines
-		foreach (file($file) as $line => $contents) {
-			$matches = array();
-			preg_match_all($regex, $contents, $matches, PREG_SET_ORDER);
+		$functions = array_keys($this->functions);
+		usort($functions, array(__CLASS__, 'functionNameComparator'));
 
-			foreach ($matches as $message) {
-				/* $message[0] = complete macro
-				 * $message[1] = prefix
-				 * $message[2] = 1. parameter
-				 * $message[3] = additional parameters
-				 */
-				$prefix = $this->functions[$message[1]][0];
-				$params = array(
-					1 => $message[2]
-				);
-				if (isset($message[3])) {
-					$m = array();
-					preg_match_all($paramsRegex, $message[3], $m, PREG_SET_ORDER);
-					foreach ($m as $index => $match) {
-						$params[$index + 2] = $match[1];
-					}
+		$phpParser = new PHPParser_Parser(new PHPParser_Lexer());
+		foreach ($tokens as $token) {
+			if ($token->type !== \Latte\Token::MACRO_TAG) {
+				continue;
+			}
+
+			$name = $this->findMacroName($token->text, $functions);
+			if (!$name) {
+				continue;
+			}
+			$value = $this->trimMacroValue($name, $token->value);
+			$stmts = $phpParser->parse("<?php\nf($value);");
+
+			foreach ($this->functions[$name] as $definition) {
+				$message = $this->processFunction($definition, $stmts[0]);
+				if ($message) {
+					$message[GettextExtractor_Extractor::LINE] = $token->line;
+					$data[] = $message;
 				}
-				$result = array(
-					GettextExtractor_Extractor::LINE => $line + 1
-				);
-				foreach ($prefix as $type => $position) {
-					if (!isset($params[$position]) || !$this->isStaticString($params[$position])) {
-						continue 2; // continue with next message
-					}
-					$result[$type] = $this->stripQuotes($this->fixEscaping($params[$position]));
-				}
-				$data[] = $result;
 			}
 		}
 		return $data;
 	}
 
 	/**
-	 * Return a regular expression for matching a parameter.
-	 *
-	 * @return string
+	 * @param array
+	 * @param PHPParser_Node_Expr_FuncCall $node
+	 * @return array
 	 */
-	private function createRegexForParam() {
-		if (!isset(self::$regexForParam)) {
-			self::$regexForParam = '(?:'.self::RE_NUMBER.'|'.self::RE_STRING.'|'.self::RE_STATIC.'|'.self::RE_VARIABLE.'|'.self::RE_FUNCTION.')';
-			$replace = array(
-				'__STATIC__' => self::RE_STATIC,
-				'__VARIABLE__' => self::RE_VARIABLE,
-				'__FUNCTION__' => self::RE_FUNCTION,
-				'__ARGS__' => self::RE_ARGS,
-				'__KEY__' => self::RE_KEY,
-			);
-			self::$regexForParam = str_replace(
-				array_keys($replace),
-				array_values($replace),
-				self::$regexForParam
-			);
+	private function processFunction(array $definition, PHPParser_Node_Expr_FuncCall $node) {
+		foreach ($definition as $type => $position) {
+			if (!isset($node->args[$position - 1])) {
+				return;
+			}
+			$arg = $node->args[$position - 1]->value;
+			if ($arg instanceof PHPParser_Node_Scalar_String) {
+				$message[$type] = $arg->value;
+			} else {
+				return;
+			}
 		}
-		return self::$regexForParam;
+		return $message;
 	}
 
 	/**
-	 * Return a regular expression for matching macro.
-	 *
-	 * @param array $macros
-	 * @return string
+	 * @param string
+	 * @param array
+	 * @return string|null
 	 */
-	private function createRegex(array $macros) {
-		$quotedMacros = array();
-		foreach ($macros as $prefix) {
-			$quotedMacros[] = preg_quote($prefix);
+	private function findMacroName($text, array $functions) {
+		foreach ($functions as $function) {
+			if (strpos($text, '{'.$function) === 0) {
+				return $function;
+			}
 		}
-		$replace = array(
-			'__MACRO__' => implode('|', $quotedMacros),
-			'__PARAM__' => $this->createRegexForParam(),
-			'__IDENTIFIER__' => self::RE_IDENTIFIER,
-			'__MODIFIER__' => self::RE_MODIFIER,
-		);
-		$regex = str_replace(
-				array_keys($replace),
-				array_values($replace),
-				self::RE_TAG
-		);
-
-		return "/$regex/";
 	}
 
 	/**
-	 * Check if string is static. No variables, no composing.
-	 *
-	 * @param string $string
-	 * @return bool
+	 * @param string
+	 * @param string
+	 * @return string
 	 */
-	private function isStaticString($string) {
-		$prime = substr($string, 0, 1);
-		if (($prime === "'" || $prime === '"') && substr($string, -1, 1) === $prime) {
-			return true;
-		}
-		/** @todo more tests needed: "some$string" "{$object->method()}" */
-		return false;
+	private function trimMacroValue($name, $value) {
+		$offset = strlen(ltrim($name, '!_'));
+		return substr($value, $offset);
+	}
+
+	/**
+	 * @param string $a
+	 * @param string $b
+	 * @return integer
+	 * @internal
+	 */
+	public static function functionNameComparator($a, $b) {
+		return strlen($b) - strlen($a);
 	}
 }
