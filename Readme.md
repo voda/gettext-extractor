@@ -5,6 +5,7 @@ Cool tool for extracting gettext phrases from PHP files and templates.
 Dependencies
 ------------
 * [nikic/PHP-Parser](https://github.com/nikic/PHP-Parser/)
+* [latte](https://github.com/nette/latte/) - for .latte templates
 
 Dependencies are installed with [composer](http://getcomposer.org/). You can use these commands:
 
