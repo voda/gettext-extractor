@@ -87,7 +87,7 @@ class GettextExtractor_Extractor {
 	}
 
 	/**
-	 * Close the log hangdler if needed
+	 * Close the log handler if needed
 	 */
 	public function __destruct() {
 		if (is_resource($this->logHandler)) {
