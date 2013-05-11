@@ -14,4 +14,9 @@
 		<directory>tests/unit</directory>
 		<directory>tests/integration</directory>
 	</testsuite>
+	<filter>
+		<whitelist>
+			<directory>GettextExtractor</directory>
+		</whitelist>
+	</filter>
 </phpunit>
