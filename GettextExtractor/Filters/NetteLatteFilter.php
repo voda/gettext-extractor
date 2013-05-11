@@ -32,42 +32,12 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	}
 
 	/**
-	 * Includes a prefix to match in { }
-	 * Alias for AFilter::addFunction
-	 *
-	 * @param $prefix string
-	 * @param $singular int
-	 * @param $plural int|null
-	 * @param $context int|null
-	 * @return self
-	 */
-	public function addPrefix($prefix, $singular = 1, $plural = null, $context = null) {
-		parent::addFunction($prefix, $singular, $plural, $context);
-		return $this;
-	}
-
-	/**
-	 * Excludes a prefix from { }
-	 * Alias for AFilter::removeFunction
-	 *
-	 * @param string $prefix
-	 * @return self
-	 */
-	public function removePrefix($prefix) {
-		parent::removeFunction($prefix);
-		return $this;
-	}
-
-	/**
 	 * Parses given file and returns found gettext phrases
 	 *
 	 * @param string $file
 	 * @return array
 	 */
 	public function extract($file) {
-		if (count($this->functions) === 0) {
-			return;
-		}
 		$data = array();
 
 		$latteParser = new \Latte\Parser();

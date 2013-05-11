@@ -45,8 +45,8 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 				->addFunction('translate');
 
 		$this->getFilter('NetteLatte')
-				->addPrefix('!_')
-				->addPrefix('_');
+				->addFunction('!_')
+				->addFunction('_');
 	}
 
 	/**
