@@ -32,8 +32,8 @@ class GettextExtractor_Extractor {
 	const LINE = 'line';
 	const FILE = 'file';
 
-	/** @var resource */
-	protected $logHandler;
+	/** @var string */
+	protected $logFile;
 
 	/** @var array */
 	protected $inputFiles = array();
@@ -70,29 +70,13 @@ class GettextExtractor_Extractor {
 	protected $outputMode = self::OUTPUT_PO;
 
 	/**
-	 * Log setup
-	 *
-	 * @param string|bool $logToFile Bool or path of custom log file
+	 * @param string
 	 */
-	public function __construct($logToFile = false) {
-		if ($logToFile === false) {
-			$logToFile = 'php://stderr';
-		} elseif (!is_string($logToFile)) { // default log file
-			$logToFile = self::LOG_FILE;
-		}
-		$this->logHandler = fopen($logToFile, "w");
+	public function __construct($logFile = 'php://stderr') {
+		$this->logFile = $logFile;
 		$this->setOutputMode(self::OUTPUT_POT);
 		$this->addFilter('PHP', new GettextExtractor_Filters_PHPFilter());
 		$this->setMeta('POT-Creation-Date', date('c'));
-	}
-
-	/**
-	 * Close the log handler if needed
-	 */
-	public function __destruct() {
-		if (is_resource($this->logHandler)) {
-			fclose($this->logHandler);
-		}
 	}
 
 	/**
@@ -101,10 +85,8 @@ class GettextExtractor_Extractor {
 	 * @param string $message
 	 */
 	public function log($message) {
-		if (is_resource($this->logHandler)) {
-			fwrite($this->logHandler, $message."\n");
-		} else {
-			echo $message."\n";
+		if ($this->logFile) {
+			file_put_contents($this->logFile, "$message\n", FILE_APPEND);
 		}
 	}
 
