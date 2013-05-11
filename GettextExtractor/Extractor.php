@@ -23,8 +23,6 @@ class GettextExtractor_Extractor {
 
 	const LOG_FILE = 'extractor.log';
 	const ESCAPE_CHARS = '"';
-	const OUTPUT_PO = 'PO';
-	const OUTPUT_POT = 'POT';
 
 	const CONTEXT = 'context';
 	const SINGULAR = 'singular';
@@ -66,15 +64,11 @@ class GettextExtractor_Extractor {
 	/** @var array */
 	protected $data = array();
 
-	/** @var string */
-	protected $outputMode = self::OUTPUT_PO;
-
 	/**
 	 * @param string
 	 */
 	public function __construct($logFile = 'php://stderr') {
 		$this->logFile = $logFile;
-		$this->setOutputMode(self::OUTPUT_POT);
 		$this->addFilter('PHP', new GettextExtractor_Filters_PHPFilter());
 		$this->setMeta('POT-Creation-Date', date('c'));
 	}
@@ -295,44 +289,16 @@ class GettextExtractor_Extractor {
 			$output[] = $this->formatMessage($message[self::SINGULAR], 'msgid');
 			if (isset($message[self::PLURAL])) {
 				$output[] = $this->formatMessage($message[self::PLURAL], 'msgid_plural');
-				switch ($this->outputMode) {
-					case self::OUTPUT_POT:
-						$output[] = 'msgstr[0] ""';
-						$output[] = 'msgstr[1] ""';
-						break;
-					case self::OUTPUT_PO: // fallthrough
-					default:
-						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr[0]');
-						$output[] = $this->formatMessage($message[self::PLURAL], 'msgstr[1]');
-				}
+				$output[] = 'msgstr[0] ""';
+				$output[] = 'msgstr[1] ""';
 			} else {
-				switch ($this->outputMode) {
-					case self::OUTPUT_POT:
-						$output[] = 'msgstr ""';
-						break;
-					case self::OUTPUT_PO: // fallthrough
-					default:
-						$output[] = $this->formatMessage($message[self::SINGULAR], 'msgstr');
-				}
+				$output[] = 'msgstr ""';
 			}
 
 			$output[] = '';
 		}
 
 		return join("\n", $output);
-	}
-
-	/**
-	 * Sets output mode.
-	 * On OUTPUT_PO, english msgstrs will be generated,
-	 * on OUTPUT_POT, msgstrs will be empty
-	 *
-	 * @param string $outputMode
-	 * @return string
-	 */
-	public function setOutputMode($outputMode) {
-		$this->outputMode = $outputMode;
-		return $this;
 	}
 
 	protected function addMessages(array $messages, $file) {
