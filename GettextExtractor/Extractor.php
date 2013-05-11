@@ -196,10 +196,9 @@ class GettextExtractor_Extractor {
 	 * @return self
 	 */
 	public function setFilter($extension, $filterName) {
-		if (isset($this->filters[$extension]) && in_array($filterName, $this->filters[$extension])) {
-			return $this;
+		if (!isset($this->filters[$extension]) || !in_array($filterName, $this->filters[$extension])) {
+			$this->filters[$extension][] = $filterName;
 		}
-		$this->filters[$extension][] = $filterName;
 		return $this;
 	}
 
@@ -238,6 +237,7 @@ class GettextExtractor_Extractor {
 	 * Gets a value of a meta key
 	 *
 	 * @param string $key
+	 * @return string|null
 	 */
 	public function getMeta($key) {
 		return isset($this->meta[$key]) ? $this->meta[$key] : null;
@@ -263,22 +263,7 @@ class GettextExtractor_Extractor {
 	 * @return self
 	 */
 	public function save($outputFile, $data = null) {
-		$data = $data ? $data : $this->data;
-
-		// Output file permission check
-		if (file_exists($outputFile) && !is_writable($outputFile)) {
-			$this->throwException('ERROR: Output file is not writable!');
-		}
-
-		$handle = fopen($outputFile, "w");
-
-		fwrite($handle, $this->formatData($data));
-
-		fclose($handle);
-
-		$this->log("Output file '$outputFile' created");
-
-		return $this;
+		file_put_contents($outputFile, $this->formatData($data ?: $this->data));
 	}
 
 	/**
@@ -338,16 +323,6 @@ class GettextExtractor_Extractor {
 	}
 
 	/**
-	 * Escape a sring not to break the gettext syntax
-	 *
-	 * @param string $string
-	 * @return string
-	 */
-	protected function addSlashes($string) {
-		return addcslashes($string, self::ESCAPE_CHARS);
-	}
-
-	/**
 	 * Sets output mode.
 	 * On OUTPUT_PO, english msgstrs will be generated,
 	 * on OUTPUT_POT, msgstrs will be empty
@@ -389,7 +364,7 @@ class GettextExtractor_Extractor {
 	}
 
 	protected function formatMessage($message, $prefix = null) {
-		$message = $this->addSlashes($message);
+		$message = addcslashes($message, self::ESCAPE_CHARS);
 		$message = '"' . str_replace("\n", "\\n\"\n\"", $message) . '"';
 		return ($prefix ? $prefix.' ' : '') . $message;
 	}
