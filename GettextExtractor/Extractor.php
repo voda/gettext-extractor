@@ -161,15 +161,10 @@ class GettextExtractor_Extractor {
 			$this->log('Extracting data from file '.$inputFile);
 
 			$fileExtension = pathinfo($inputFile, PATHINFO_EXTENSION);
-			foreach ($this->filters as $extension => $filters) {
-				// Check file extension
-				if ($fileExtension !== $extension) {
-					continue;
-				}
-
+			if (isset($this->filters[$fileExtension])) {
 				$this->log('Processing file '.$inputFile);
 
-				foreach ($filters as $filterName) {
+				foreach ($this->filters[$fileExtension] as $filterName) {
 					$filter = $this->getFilter($filterName);
 					$filterData = $filter->extract($inputFile);
 					$this->log('  Filter '.$filterName.' applied');
