@@ -74,32 +74,4 @@ abstract class GettextExtractor_Filters_AFilter {
 		$this->functions = array();
 		return $this;
 	}
-
-	/**
-	 * Removes backslashes from before primes and double primes in primed or double primed strings respectively
-	 *
-	 * @return string
-	 * @author Matěj Humpál (https://github.com/finwe)
-	 */
-	protected function fixEscaping($string) {
-		$prime = substr($string, 0, 1);
-		$string = str_replace('\\' . $prime, $prime, $string);
-		return $string;
-	}
-
-	/**
-	 * Remove single or double quotes from begin and end of the string.
-	 *
-	 * @param string $string
-	 * @return string
-	 */
-	protected function stripQuotes($string) {
-		$prime = substr($string, 0, 1);
-		if ($prime === "'" || $prime === '"') {
-			if (substr($string, -1, 1) === $prime) {
-				$string = substr($string, 1, -1);
-			}
-		}
-		return $string;
-	}
 }
