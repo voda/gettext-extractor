@@ -105,6 +105,17 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		), $messages);
 	}
 
+	public function testSingularAndPluralMessageFromOneParameter() {
+		$this->object->addFunction('plural', 1,1);
+		$messages = $this->object->extract($this->file);
+
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 33,
+			GettextExtractor_Extractor::SINGULAR => "%d weeks ago",
+			GettextExtractor_Extractor::PLURAL => "%d weeks ago",
+		), $messages);
+	}
+	
 	/**
 	 * @group bug5
 	 */
@@ -162,4 +173,6 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		$messages = $this->object->extract(dirname(__FILE__) . '/../../data/bug11.php');
 		$this->assertEmpty($messages);
 	}
+	
+	
 }

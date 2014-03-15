@@ -29,3 +29,5 @@ $form->addSelect('name', 'label', array(
 ));
 $foo->bar('Value A', 'Value B');
 Translator::gettext('Static function');
+
+ $timeAgoInWords->plural("%d weeks ago", 2);
