@@ -69,7 +69,7 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 		$message = array(
 			GettextExtractor_Extractor::LINE => $node->getLine()
 		);
-		foreach ($definition as $position => $type) {
+		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
