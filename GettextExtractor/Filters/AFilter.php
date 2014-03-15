@@ -37,19 +37,19 @@ abstract class GettextExtractor_Filters_AFilter {
 			throw new InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
 		}
 		$function = array(
-			$singular => GettextExtractor_Extractor::SINGULAR
+			GettextExtractor_Extractor::SINGULAR => $singular
 		);
 		if ($plural !== null) {
 			if (!is_int($plural) || $plural <= 0) {
 				throw new InvalidArgumentException('Invalid argument type or value given for paramater $plural.');
 			}
-			$function[$plural] = GettextExtractor_Extractor::PLURAL;
+			$function[GettextExtractor_Extractor::PLURAL] = $plural;
 		}
 		if ($context !== null) {
 			if (!is_int($context) || $context <= 0) {
 				throw new InvalidArgumentException('Invalid argument type or value given for paramater $context.');
 			}
-			$function[$context] = GettextExtractor_Extractor::CONTEXT;
+			$function[GettextExtractor_Extractor::CONTEXT] = $context;
 		}
 		$this->functions[$functionName][] = $function;
 		return $this;

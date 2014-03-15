@@ -124,7 +124,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 				$result = array(
 					GettextExtractor_Extractor::LINE => $line + 1
 				);
-				foreach ($prefix as $position => $type) {
+				foreach ($prefix as $type => $position) {
 					if (!isset($params[$position]) || !$this->isStaticString($params[$position])) {
 						continue 2; // continue with next message
 					}
