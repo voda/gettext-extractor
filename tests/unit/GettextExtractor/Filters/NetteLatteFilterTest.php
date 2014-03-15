@@ -42,6 +42,10 @@ class GettextExtractor_Filters_NetteLatteFilterTest extends GettextExtractor_Fil
 			GettextExtractor_Extractor::LINE => 1,
 			GettextExtractor_Extractor::SINGULAR => 'Testovaci retezec'
 		), $messages);
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 2,
+			GettextExtractor_Extractor::SINGULAR => 'Object access %d'
+		), $messages);
 
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 3,
@@ -76,6 +80,11 @@ class GettextExtractor_Filters_NetteLatteFilterTest extends GettextExtractor_Fil
 		$this->assertNotContains(array(
 			GettextExtractor_Extractor::LINE => 9,
 			GettextExtractor_Extractor::SINGULAR => '$object->method()'
+		), $messages);
+		
+		$this->assertNotContains(array(
+			GettextExtractor_Extractor::LINE => 9,
+			GettextExtractor_Extractor::SINGULAR => '$object->attribute'
 		), $messages);
 
 		$this->assertNotContains(array(

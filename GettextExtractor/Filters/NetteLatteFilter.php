@@ -27,10 +27,10 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	/** @internal PHP identifier, from Nette\Templates\LatteFilter */
 	const RE_IDENTIFIER = '[_a-zA-Z\x7F-\xFF][_a-zA-Z0-9\x7F-\xFF]*';
 
-	const RE_ARGS = '(\(.*?\))?';
+	const RE_ARGS = '\(.*?\)';
 	const RE_FUNCTION = '__IDENTIFIER____ARGS__(?:->__IDENTIFIER____ARGS__)*'; // Function can return object, so fluent interface is applicable
 	const RE_KEY = '\[.*?\]';
-	const RE_VARIABLE = '\$__IDENTIFIER__(?:__KEY__)*(?:__ARGS__)?(?:->__FUNCTION__)?'; // It's possible to access multidimensional array, variable functions and objects' fluent interface
+	const RE_VARIABLE = '\$__IDENTIFIER__(?:__KEY__)*(?:__ARGS__)?(?:->(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__)*)?'; // It's possible to access multidimensional array, variable functions and objects' fluent interface
 	const RE_STATIC = '__IDENTIFIER__(?:::(?:__IDENTIFIER__|__FUNCTION__|__VARIABLE__))?';
 
 	const RE_MODIFIER = '\\s*\|[^|}]+';
