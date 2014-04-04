@@ -81,7 +81,8 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 				->addFunction('addUpload', 2) // Nette 2.0
 				->addFunction('setRequired')
 				->addFunction('setDefaultValue')
-				->addFunction('skipFirst')
+				->addFunction('skipFirst') // Nette 0.9
+				->addFunction('setPrompt') // Nette 2.0
 				->addFunction('addProtection');
 
 		return $this;
