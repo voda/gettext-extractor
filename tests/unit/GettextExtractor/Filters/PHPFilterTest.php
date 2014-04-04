@@ -12,6 +12,7 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		error_reporting(-1);
 		$this->object = new GettextExtractor_Filters_PHPFilter();
 		$this->object->addFunction('addRule', 2);
+		$this->object->addClassName('TextInput', 2);
 		$this->file = dirname(__FILE__) . '/../../data/default.php';
 	}
 
@@ -33,6 +34,7 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 			GettextExtractor_Extractor::PLURAL => 'I see %d little indians!'
 		), $messages);
 	}
+	
 
 	public function testNestedFunctions() {
 		$messages = $this->object->extract($this->file);
@@ -116,6 +118,15 @@ class GettextExtractor_Filters_PHPFilterTest extends GettextExtractor_Filters_Fi
 		), $messages);
 	}
 
+	
+	public function testNewObjectParameter() {
+		$messages = $this->object->extract(dirname(__FILE__) . '/../../data/newObject.php');
+		$this->assertContains(array(
+			GettextExtractor_Extractor::LINE => 3,
+			GettextExtractor_Extractor::SINGULAR => "Label"
+		), $messages);
+	}
+	
 	/**
 	 * @group bug5
 	 */
