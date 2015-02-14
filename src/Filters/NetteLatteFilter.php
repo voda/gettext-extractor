@@ -16,6 +16,7 @@
 namespace Vodacek\GettextExtractor\Filters;
 
 use Vodacek\GettextExtractor\Extractor;
+use PhpParser;
 
 /**
  * Filter to parse curly brackets syntax in Nette Framework templates
@@ -50,7 +51,7 @@ class NetteLatteFilter extends AFilter implements IFilter {
 		$functions = array_keys($this->functions);
 		usort($functions, array(__CLASS__, 'functionNameComparator'));
 
-		$phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
+		$phpParser = new PhpParser\Parser(new PHPParser\Lexer());
 		foreach ($tokens as $token) {
 			if ($token->type !== \Latte\Token::MACRO_TAG) {
 				continue;
@@ -76,16 +77,16 @@ class NetteLatteFilter extends AFilter implements IFilter {
 
 	/**
 	 * @param array
-	 * @param PHPParser_Node_Expr_FuncCall $node
+	 * @param PhpParser\Node\Expr\FuncCall $node
 	 * @return array
 	 */
-	private function processFunction(array $definition, \PHPParser_Node_Expr_FuncCall $node) {
+	private function processFunction(array $definition, PhpParser\Node\Expr\FuncCall $node) {
 		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
 			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof \PHPParser_Node_Scalar_String) {
+			if ($arg instanceof PhpParser\Node\Scalar\String) {
 				$message[$type] = $arg->value;
 			} else {
 				return;
