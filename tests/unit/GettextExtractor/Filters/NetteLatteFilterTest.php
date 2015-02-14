@@ -4,10 +4,10 @@ use Vodacek\GettextExtractor as GE;
 
 require_once __DIR__ . '/FilterTest.php';
 
-class NetteLatteFilterTest extends FilterTest {
+class LatteFilterTest extends FilterTest {
 
 	protected function setUp() {
-		$this->object = new GE\Filters\NetteLatteFilter();
+		$this->object = new GE\Filters\LatteFilter();
 		$this->file = __DIR__ . '/../../data/default.latte';
 	}
 

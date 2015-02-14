@@ -19,11 +19,11 @@ use Vodacek\GettextExtractor\Extractor;
 use PhpParser;
 
 /**
- * Filter to parse curly brackets syntax in Nette Framework templates
+ * Filter for latte templates
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-class NetteLatteFilter extends AFilter implements IFilter {
+class LatteFilter extends AFilter implements IFilter {
 
 	public function __construct() {
 		$this->addFunction('_');

@@ -24,7 +24,7 @@ Usage
 	  -fFILE        file to extract, can be specified several times
 	  -kFUNCTION    add FUNCTION to filters, format is:
 	                FILTER:FUNCTION_NAME:SINGULAR,PLURAL,CONTEXT
-	                default FILTERs are PHP and NetteLatte
+	                default FILTERs are PHP and Latte
 	                for SINGULAR, PLURAL and CONTEXT '0' means not set
 	                can be specified several times
 	  -mKEY:VALUE   set meta header

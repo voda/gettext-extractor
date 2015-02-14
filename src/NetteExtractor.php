@@ -37,16 +37,16 @@ class NetteExtractor extends Extractor {
 		// Set basic filters
 		$this->setFilter('php', 'PHP')
 				->setFilter('phtml', 'PHP')
-				->setFilter('phtml', 'NetteLatte')
+				->setFilter('phtml', 'Latte')
 				->setFilter('latte', 'PHP')
-				->setFilter('latte', 'NetteLatte');
+				->setFilter('latte', 'Latte');
 
-		$this->addFilter('NetteLatte', new Filters\NetteLatteFilter());
+		$this->addFilter('Latte', new Filters\LatteFilter());
 
 		$this->getFilter('PHP')
 				->addFunction('translate');
 
-		$this->getFilter('NetteLatte')
+		$this->getFilter('Latte')
 				->addFunction('!_')
 				->addFunction('_');
 	}
