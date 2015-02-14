@@ -1,13 +1,5 @@
 <?php
 /**
- * GettextExtractor
- *
- * Cool tool for automatic extracting gettext strings for translation
- *
- * Works best with Nette Framework
- *
- * This source file is subject to the New BSD License.
- *
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
  */
@@ -16,11 +8,6 @@ namespace Vodacek\GettextExtractor\Filters;
 
 use Vodacek\GettextExtractor\Extractor;
 
-/**
- * Abstract filter class.
- *
- * @author Ondřej Vodáček
- */
 abstract class AFilter {
 
 	/** @var array */

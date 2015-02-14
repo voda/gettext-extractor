@@ -1,13 +1,5 @@
 <?php
 /**
- * GettextExtractor
- *
- * Cool tool for automatic extracting gettext strings for translation
- *
- * Works best with Nette Framework
- *
- * This source file is subject to the New BSD License.
- *
  * @copyright Copyright (c) 2009 Karel Klima
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
@@ -15,17 +7,9 @@
 
 namespace Vodacek\GettextExtractor;
 
-/**
- * NetteGettextExtractor tool - designed specially for use with Nette Framework
- *
- * @author Karel Klima
- * @author Ondřej Vodáček
- */
 class NetteExtractor extends Extractor {
 
 	/**
-	 * Setup mandatory filters
-	 *
 	 * @param string|bool $logToFile
 	 */
 	public function __construct($logToFile = false) {

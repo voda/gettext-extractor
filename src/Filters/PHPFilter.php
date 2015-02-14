@@ -1,9 +1,5 @@
 <?php
 /**
- * GettextExtractor
- *
- * This source file is subject to the New BSD License.
- *
  * @copyright Copyright (c) 2012 Ondřej Vodáček
  * @license New BSD License
  */
@@ -13,10 +9,6 @@ namespace Vodacek\GettextExtractor\Filters;
 use Vodacek\GettextExtractor\Extractor;
 use PhpParser;
 
-/**
- * Filter to fetch gettext phrases from PHP functions
- * @author Ondřej Vodáček
- */
 class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
 	/** @var array */
@@ -33,12 +25,6 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		$this->addFunction('_np', 2, 3, 1);
 	}
 
-	/**
-	 * Parses given file and returns found gettext phrases
-	 *
-	 * @param string $file
-	 * @return array
-	 */
 	public function extract($file) {
 		$this->data = array();
 		$parser = new PHPParser\Parser(new PHPParser\Lexer());

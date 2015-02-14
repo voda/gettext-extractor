@@ -1,13 +1,5 @@
 <?php
 /**
- * GettextExtractor
- *
- * Cool tool for automatic extracting gettext strings for translation
- *
- * Works best with Nette Framework
- *
- * This source file is subject to the New BSD License.
- *
  * @copyright Copyright (c) 2009 Karel Klíma
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
@@ -18,11 +10,6 @@ namespace Vodacek\GettextExtractor\Filters;
 use Vodacek\GettextExtractor\Extractor;
 use PhpParser;
 
-/**
- * Filter for latte templates
- * @author Karel Klíma
- * @author Ondřej Vodáček
- */
 class LatteFilter extends AFilter implements IFilter {
 
 	public function __construct() {
@@ -36,12 +23,6 @@ class LatteFilter extends AFilter implements IFilter {
 		$this->addFunction('!_np', 2, 3, 1);
 	}
 
-	/**
-	 * Parses given file and returns found gettext phrases
-	 *
-	 * @param string $file
-	 * @return array
-	 */
 	public function extract($file) {
 		$data = array();
 
