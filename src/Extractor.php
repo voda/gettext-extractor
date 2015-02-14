@@ -13,13 +13,15 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor;
+
 /**
  * GettextExtractor tool
  *
  * @author Karel Klima
  * @author Ondřej Vodáček
  */
-class GettextExtractor_Extractor {
+class Extractor {
 
 	const LOG_FILE = 'extractor.log';
 	const ESCAPE_CHARS = '"';
@@ -69,7 +71,7 @@ class GettextExtractor_Extractor {
 	 */
 	public function __construct($logFile = 'php://stderr') {
 		$this->logFile = $logFile;
-		$this->addFilter('PHP', new GettextExtractor_Filters_PHPFilter());
+		$this->addFilter('PHP', new Filters\PHPFilter());
 		$this->setMeta('POT-Creation-Date', date('c'));
 	}
 
@@ -124,8 +126,8 @@ class GettextExtractor_Extractor {
 		if (is_file($resource)) {
 			$this->inputFiles[] = $resource;
 		} elseif (is_dir($resource)) {
-			$iterator = new RecursiveIteratorIterator(
-					new RecursiveDirectoryIterator($resource, RecursiveDirectoryIterator::SKIP_DOTS)
+			$iterator = new \RecursiveIteratorIterator(
+					new \RecursiveDirectoryIterator($resource, \RecursiveDirectoryIterator::SKIP_DOTS)
 			);
 			foreach ($iterator as $file) {
 				$this->inputFiles[] = $file->getPathName();
@@ -202,7 +204,7 @@ class GettextExtractor_Extractor {
 	 * @param type $filterName
 	 * @param GettextExtractor_Filters_IFilter $filter
 	 */
-	public function addFilter($filterName, GettextExtractor_Filters_IFilter $filter) {
+	public function addFilter($filterName, Filters\IFilter $filter) {
 		$this->filterStore[$filterName] = $filter;
 	}
 

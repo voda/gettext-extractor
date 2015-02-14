@@ -13,7 +13,7 @@
 		"latte/latte": "~2.2.0"
 	},
 	"autoload": {
-		"psr-0": {"GettextExtractor" : ""}
+		"psr-4": {"Vodacek\\GettextExtractor\\" : "src"}
 	},
 	"bin": [
 		"gettext-extractor.php"

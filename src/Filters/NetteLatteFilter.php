@@ -13,12 +13,16 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor\Filters;
+
+use Vodacek\GettextExtractor\Extractor;
+
 /**
  * Filter to parse curly brackets syntax in Nette Framework templates
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter {
+class NetteLatteFilter extends AFilter implements IFilter {
 
 	public function __construct() {
 		$this->addFunction('_');
@@ -46,7 +50,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 		$functions = array_keys($this->functions);
 		usort($functions, array(__CLASS__, 'functionNameComparator'));
 
-		$phpParser = new PHPParser_Parser(new PHPParser_Lexer());
+		$phpParser = new \PHPParser_Parser(new \PHPParser_Lexer());
 		foreach ($tokens as $token) {
 			if ($token->type !== \Latte\Token::MACRO_TAG) {
 				continue;
@@ -62,7 +66,7 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 			foreach ($this->functions[$name] as $definition) {
 				$message = $this->processFunction($definition, $stmts[0]);
 				if ($message) {
-					$message[GettextExtractor_Extractor::LINE] = $token->line;
+					$message[Extractor::LINE] = $token->line;
 					$data[] = $message;
 				}
 			}
@@ -75,13 +79,13 @@ class GettextExtractor_Filters_NetteLatteFilter extends GettextExtractor_Filters
 	 * @param PHPParser_Node_Expr_FuncCall $node
 	 * @return array
 	 */
-	private function processFunction(array $definition, PHPParser_Node_Expr_FuncCall $node) {
+	private function processFunction(array $definition, \PHPParser_Node_Expr_FuncCall $node) {
 		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
 			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof PHPParser_Node_Scalar_String) {
+			if ($arg instanceof \PHPParser_Node_Scalar_String) {
 				$message[$type] = $arg->value;
 			} else {
 				return;

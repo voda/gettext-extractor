@@ -12,12 +12,16 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor\Filters;
+
+use Vodacek\GettextExtractor\Extractor;
+
 /**
  * Abstract filter class.
  *
  * @author Ondřej Vodáček
  */
-abstract class GettextExtractor_Filters_AFilter {
+abstract class AFilter {
 
 	/** @var array */
 	protected $functions = array();
@@ -33,22 +37,22 @@ abstract class GettextExtractor_Filters_AFilter {
 	 */
 	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
 		if (!is_int($singular) || $singular <= 0) {
-			throw new InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
+			throw new \InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
 		}
 		$function = array(
-			GettextExtractor_Extractor::SINGULAR => $singular
+			Extractor::SINGULAR => $singular
 		);
 		if ($plural !== null) {
 			if (!is_int($plural) || $plural <= 0) {
-				throw new InvalidArgumentException('Invalid argument type or value given for paramater $plural.');
+				throw new \InvalidArgumentException('Invalid argument type or value given for paramater $plural.');
 			}
-			$function[GettextExtractor_Extractor::PLURAL] = $plural;
+			$function[Extractor::PLURAL] = $plural;
 		}
 		if ($context !== null) {
 			if (!is_int($context) || $context <= 0) {
-				throw new InvalidArgumentException('Invalid argument type or value given for paramater $context.');
+				throw new \InvalidArgumentException('Invalid argument type or value given for paramater $context.');
 			}
-			$function[GettextExtractor_Extractor::CONTEXT] = $context;
+			$function[Extractor::CONTEXT] = $context;
 		}
 		$this->functions[$functionName][] = $function;
 		return $this;

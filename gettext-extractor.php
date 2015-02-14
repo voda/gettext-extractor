@@ -96,7 +96,7 @@ if (isset($options['m'])) {
 	}
 }
 
-$extractor = new GettextExtractor_NetteExtractor($log);
+$extractor = new Vodacek\GettextExtractor\NetteExtractor($log);
 $extractor->setupForms()->setupDataGrid();
 if ($keywords !== null) {
 	foreach ($keywords as $value) {

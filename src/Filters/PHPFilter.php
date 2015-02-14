@@ -8,11 +8,15 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor\Filters;
+
+use Vodacek\GettextExtractor\Extractor;
+
 /**
  * Filter to fetch gettext phrases from PHP functions
  * @author Ondřej Vodáček
  */
-class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilter implements GettextExtractor_Filters_IFilter, PHPParser_NodeVisitor {
+class PHPFilter extends AFilter implements IFilter, \PHPParser_NodeVisitor {
 
 	/** @var array */
 	private $data;
@@ -36,9 +40,9 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 	 */
 	public function extract($file) {
 		$this->data = array();
-		$parser = new PHPParser_Parser(new PHPParser_Lexer());
+		$parser = new \PHPParser_Parser(new \PHPParser_Lexer());
 		$stmts = $parser->parse(file_get_contents($file));
-		$traverser = new PHPParser_NodeTraverser();
+		$traverser = new \PHPParser_NodeTraverser();
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
 		$data = $this->data;
@@ -46,11 +50,11 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 		return $data;
 	}
 
-	public function enterNode(PHPParser_Node $node) {
+	public function enterNode(\PHPParser_Node $node) {
 		$name = null;
-		if (($node instanceof PHPParser_Node_Expr_MethodCall || $node instanceof PHPParser_Node_Expr_StaticCall) && is_string($node->name)) {
+		if (($node instanceof \PHPParser_Node_Expr_MethodCall || $node instanceof \PHPParser_Node_Expr_StaticCall) && is_string($node->name)) {
 			$name = $node->name;
-		} elseif ($node instanceof PHPParser_Node_Expr_FuncCall && $node->name instanceof PHPParser_Node_Name) {
+		} elseif ($node instanceof \PHPParser_Node_Expr_FuncCall && $node->name instanceof \PHPParser_Node_Name) {
 			$parts = $node->name->parts;
 			$name = array_pop($parts);
 		} else {
@@ -64,20 +68,20 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 		}
 	}
 
-	private function processFunction(array $definition, PHPParser_Node $node) {
+	private function processFunction(array $definition, \PHPParser_Node $node) {
 		$message = array(
-			GettextExtractor_Extractor::LINE => $node->getLine()
+			Extractor::LINE => $node->getLine()
 		);
 		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
 			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof PHPParser_Node_Scalar_String) {
+			if ($arg instanceof \PHPParser_Node_Scalar_String) {
 				$message[$type] = $arg->value;
-			} elseif ($arg instanceof PHPParser_Node_Expr_Array) {
+			} elseif ($arg instanceof \PHPParser_Node_Expr_Array) {
 				foreach ($arg->items as $item) {
-					if ($item->value instanceof PHPParser_Node_Scalar_String) {
+					if ($item->value instanceof \PHPParser_Node_Scalar_String) {
 						$message[$type][] = $item->value->value;
 					}
 				}
@@ -88,10 +92,10 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 				return;
 			}
 		}
-		if (is_array($message[GettextExtractor_Extractor::SINGULAR])) {
-			foreach ($message[GettextExtractor_Extractor::SINGULAR] as $value) {
+		if (is_array($message[Extractor::SINGULAR])) {
+			foreach ($message[Extractor::SINGULAR] as $value) {
 				$tmp = $message;
-				$tmp[GettextExtractor_Extractor::SINGULAR] = $value;
+				$tmp[Extractor::SINGULAR] = $value;
 				$this->data[] = $tmp;
 			}
 		} else {
@@ -107,6 +111,6 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 	public function beforeTraverse(array $nodes) {
 	}
 
-	public function leaveNode(PHPParser_Node $node) {
+	public function leaveNode(\PHPParser_Node $node) {
 	}
 }

@@ -13,12 +13,14 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor\Filters;
+
 /**
  * Gettext parser filters interface
  * @author Karel Klíma
  * @author Ondřej Vodáček
  */
-interface GettextExtractor_Filters_IFilter {
+interface IFilter {
 
 	/**
 	 * Extracts gettext phrases from a file

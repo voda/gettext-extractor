@@ -13,13 +13,15 @@
  * @license New BSD License
  */
 
+namespace Vodacek\GettextExtractor;
+
 /**
  * NetteGettextExtractor tool - designed specially for use with Nette Framework
  *
  * @author Karel Klima
  * @author Ondřej Vodáček
  */
-class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
+class NetteExtractor extends Extractor {
 
 	/**
 	 * Setup mandatory filters
@@ -39,7 +41,7 @@ class GettextExtractor_NetteExtractor extends GettextExtractor_Extractor {
 				->setFilter('latte', 'PHP')
 				->setFilter('latte', 'NetteLatte');
 
-		$this->addFilter('NetteLatte', new GettextExtractor_Filters_NetteLatteFilter());
+		$this->addFilter('NetteLatte', new Filters\NetteLatteFilter());
 
 		$this->getFilter('PHP')
 				->addFunction('translate');
