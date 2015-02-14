@@ -2,9 +2,6 @@
 
 use Vodacek\GettextExtractor as GE;
 
-/**
- * @author Ondřej Vodáček
- */
 class NetteFormsTest extends PHPUnit_Framework_TestCase {
 
 	/** @var GettextExtractor_NetteExtractor */

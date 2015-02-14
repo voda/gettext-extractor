@@ -2,9 +2,6 @@
 
 use Vodacek\GettextExtractor as GE;
 
-/**
- * @author Ondřej Vodáček
- */
 abstract class FilterTest extends PHPUnit_Framework_TestCase {
 
 	/** @var AFilter */
