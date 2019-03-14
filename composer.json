@@ -9,7 +9,7 @@
 	"license": "BSD-3-Clause",
 	"require": {
 		"php": ">=7.2.0",
-		"nikic/php-parser": "~1.1.0",
+		"nikic/php-parser": "~4.2.0",
 		"latte/latte": "~2.2.0"
 	},
 	"autoload": {

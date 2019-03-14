@@ -6,8 +6,8 @@
 
 namespace Vodacek\GettextExtractor\Filters;
 
-use Vodacek\GettextExtractor\Extractor;
 use PhpParser;
+use Vodacek\GettextExtractor\Extractor;
 
 class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
@@ -27,9 +27,9 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
 	public function extract($file) {
 		$this->data = array();
-		$parser = new PHPParser\Parser(new PHPParser\Lexer());
+		$parser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
 		$stmts = $parser->parse(file_get_contents($file));
-		$traverser = new \PhpParser\NodeTraverser();
+		$traverser = new PhpParser\NodeTraverser();
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
 		$data = $this->data;
@@ -39,9 +39,9 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
 	public function enterNode(PhpParser\Node $node) {
 		$name = null;
-		if (($node instanceof PhpParser\Node\Expr\MethodCall || $node instanceof \PhpParser\Node\Expr\StaticCall) && is_string($node->name)) {
+		if (($node instanceof PhpParser\Node\Expr\MethodCall || $node instanceof PhpParser\Node\Expr\StaticCall) && is_string($node->name)) {
 			$name = $node->name;
-		} elseif ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name instanceof \PhpParser\Node\Name) {
+		} elseif ($node instanceof PhpParser\Node\Expr\FuncCall && $node->name instanceof PhpParser\Node\Name) {
 			$parts = $node->name->parts;
 			$name = array_pop($parts);
 		} else {
@@ -59,16 +59,16 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		$message = array(
 			Extractor::LINE => $node->getLine()
 		);
-		foreach ($definition as $type => $position) {
+		foreach ($definition as $position => $type) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
 			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof \PhpParser\Node\Scalar\String) {
+			if ($arg instanceof PhpParser\Node\Scalar\String_) {
 				$message[$type] = $arg->value;
-			} elseif ($arg instanceof \PhpParser\Node\Expr\Array_) {
+			} elseif ($arg instanceof PhpParser\Node\Expr\Array_) {
 				foreach ($arg->items as $item) {
-					if ($item->value instanceof \PhpParser\Node\Scalar\String) {
+					if ($item->value instanceof PhpParser\Node\Scalar\String_) {
 						$message[$type][] = $item->value->value;
 					}
 				}
