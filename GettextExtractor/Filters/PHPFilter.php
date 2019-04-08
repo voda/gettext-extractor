@@ -51,8 +51,8 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 
 	public function enterNode(\PhpParser\Node $node) {
 		$name = null;
-		if (($node instanceof \PhpParser\Node\Expr\MethodCall || $node instanceof \PhpParser\Node\Expr\StaticCall) && is_string($node->name)) {
-			$name = $node->name;
+		if (($node instanceof \PhpParser\Node\Expr\MethodCall || $node instanceof \PhpParser\Node\Expr\StaticCall) && $node->name instanceof \PhpParser\Node\Identifier && is_string($node->name->name)) {
+			$name = $node->name->name;
 		} elseif ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name instanceof \PhpParser\Node\Name) {
 			$parts = $node->name->parts;
 			$name = array_pop($parts);
@@ -71,7 +71,7 @@ class GettextExtractor_Filters_PHPFilter extends GettextExtractor_Filters_AFilte
 		$message = array(
 			GettextExtractor_Extractor::LINE => $node->getLine()
 		);
-		foreach ($definition as $position => $type) {
+		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
 				return;
 			}
