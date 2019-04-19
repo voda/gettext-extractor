@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2009 Karel Klíma
  * @copyright Copyright (c) 2010 Ondřej Vodáček
@@ -15,5 +16,5 @@ interface IFilter {
 	 * @param string $file
 	 * @return array List<Map<KEY, string>>
 	 */
-	public function extract($file);
+	public function extract(string $file): array;
 }

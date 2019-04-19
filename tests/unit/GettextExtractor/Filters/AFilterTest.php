@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
@@ -13,18 +14,18 @@ class AFilterTest extends TestCase {
 	}
 
 	/**
-	 * @dataProvider dataProvider_AddingFunctionWithInvalidParamter
+	 * @dataProvider dataProvider_AddingFunctionWithInvalidParameter
 	 */
-	public function testAddingFunctionWithInvalidParamter($s, $p, $c) {
+	public function testAddingFunctionWithInvalidParameter($s, $p, $c): void {
 		$this->expectException(InvalidArgumentException::class);
 		$this->object->addFunction('function', $s, $p, $c);
 	}
-	public static function dataProvider_AddingFunctionWithInvalidParamter() {
+
+	public static function dataProvider_AddingFunctionWithInvalidParameter(): array {
 		return array(
 			array(0, null, null),
 			array(1, 0, null),
 			array(1, 2, 0),
-			array('a', null, null),
 			array(-2, null, null)
 		);
 	}

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2009 Karel Klima
  * @copyright Copyright (c) 2010 Ondřej Vodáček
@@ -38,9 +39,9 @@ class NetteExtractor extends Extractor {
 	/**
 	 * Optional setup of Forms translations
 	 *
-	 * @return NetteGettextExtractor
+	 * @return self
 	 */
-	public function setupForms() {
+	public function setupForms(): self {
 		$php = $this->getFilter('PHP');
 		$php->addFunction('setText')
 				->addFunction('setEmptyValue')
@@ -75,9 +76,9 @@ class NetteExtractor extends Extractor {
 	/**
 	 * Optional setup of DataGrid component translations
 	 *
-	 * @return NetteGettextExtractor
+	 * @return self
 	 */
-	public function setupDataGrid() {
+	public function setupDataGrid(): self {
 		$php = $this->getFilter('PHP');
 		$php->addFunction('addColumn', 2)
 				->addFunction('addNumericColumn', 2)

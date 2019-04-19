@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2009 Karel Klima
  * @copyright Copyright (c) 2010 Ondřej Vodáček
@@ -7,16 +8,20 @@
 
 namespace Vodacek\GettextExtractor;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+use Vodacek\GettextExtractor\Filters\IFilter;
+
 class Extractor {
 
-	const LOG_FILE = 'extractor.log';
-	const ESCAPE_CHARS = '"';
+	private const ESCAPE_CHARS = '"';
 
-	const CONTEXT = 'context';
-	const SINGULAR = 'singular';
-	const PLURAL = 'plural';
-	const LINE = 'line';
-	const FILE = 'file';
+	public const CONTEXT = 'context';
+	public const SINGULAR = 'singular';
+	public const PLURAL = 'plural';
+	public const LINE = 'line';
+	public const FILE = 'file';
 
 	/** @var string */
 	protected $logFile;
@@ -39,23 +44,20 @@ class Extractor {
 
 	/** @var array */
 	protected $meta = array(
-		"POT-Creation-Date" => "",
-		"PO-Revision-Date" => "YEAR-MO-DA HO:MI+ZONE",
-		"Last-Translator" => "FULL NAME <EMAIL@ADDRESS>",
-		"Language-Team" => "LANGUAGE <LL@li.org>",
-		"MIME-Version" => "1.0",
-		"Content-Type" => "text/plain; charset=UTF-8",
-		"Content-Transfer-Encoding" => "8bit",
-		"Plural-Forms" => "nplurals=INTEGER; plural=EXPRESSION;"
+		'POT-Creation-Date' => '',
+		'PO-Revision-Date' => 'YEAR-MO-DA HO:MI+ZONE',
+		'Last-Translator' => 'FULL NAME <EMAIL@ADDRESS>',
+		'Language-Team' => 'LANGUAGE <LL@li.org>',
+		'MIME-Version' => '1.0',
+		'Content-Type' => 'text/plain; charset=UTF-8',
+		'Content-Transfer-Encoding' => '8bit',
+		'Plural-Forms' => 'nplurals=INTEGER; plural=EXPRESSION;'
 	);
 
 	/** @var array */
 	protected $data = array();
 
-	/**
-	 * @param string
-	 */
-	public function __construct($logFile = 'php://stderr') {
+	public function __construct(string $logFile = 'php://stderr') {
 		$this->logFile = $logFile;
 		$this->addFilter('PHP', new Filters\PHPFilter());
 		$this->setMeta('POT-Creation-Date', date('c'));
@@ -66,22 +68,16 @@ class Extractor {
 	 *
 	 * @param string $message
 	 */
-	public function log($message) {
+	public function log(string $message): void {
 		if ($this->logFile) {
 			file_put_contents($this->logFile, "$message\n", FILE_APPEND);
 		}
 	}
 
-	/**
-	 * Exception factory
-	 *
-	 * @param string $message
-	 * @throws Exception
-	 */
-	protected function throwException($message) {
-		$message = $message ? $message : 'Something unexpected occured. See GettextExtractor log for details';
+	protected function throwException(string $message): void {
+		$message = $message ?: 'Something unexpected occured. See GettextExtractor log for details';
 		$this->log($message);
-		throw new Exception($message);
+		throw new RuntimeException($message);
 	}
 
 	/**
@@ -90,7 +86,7 @@ class Extractor {
 	 * @param string|array $resource
 	 * @return self
 	 */
-	public function scan($resource) {
+	public function scan($resource): self {
 		$this->inputFiles = array();
 		if (!is_array($resource)) {
 			$resource = array($resource);
@@ -108,12 +104,12 @@ class Extractor {
 	 *
 	 * @param string $resource File or directory
 	 */
-	protected function _scan($resource) {
+	private function _scan(string $resource): void {
 		if (is_file($resource)) {
 			$this->inputFiles[] = $resource;
 		} elseif (is_dir($resource)) {
-			$iterator = new \RecursiveIteratorIterator(
-					new \RecursiveDirectoryIterator($resource, \RecursiveDirectoryIterator::SKIP_DOTS)
+			$iterator = new RecursiveIteratorIterator(
+					new RecursiveDirectoryIterator($resource, RecursiveDirectoryIterator::SKIP_DOTS)
 			);
 			foreach ($iterator as $file) {
 				$this->inputFiles[] = $file->getPathName();
@@ -126,10 +122,10 @@ class Extractor {
 	/**
 	 * Extracts gettext keys from input files
 	 *
-	 * @param array $inputFiles
+	 * @param string[] $inputFiles
 	 * @return array
 	 */
-	protected function _extract($inputFiles) {
+	private function _extract(array $inputFiles): array {
 		$inputFiles = array_unique($inputFiles);
 		sort($inputFiles);
 		foreach ($inputFiles as $inputFile) {
@@ -157,13 +153,7 @@ class Extractor {
 		return $this->data;
 	}
 
-	/**
-	 * Gets an instance of a GettextExtractor filter
-	 *
-	 * @param string $filterName
-	 * @return GettextExtractor_Filters_IFilter
-	 */
-	public function getFilter($filterName) {
+	public function getFilter(string $filterName): IFilter {
 		if (isset($this->filterStore[$filterName])) {
 			return $this->filterStore[$filterName];
 		}
@@ -177,8 +167,8 @@ class Extractor {
 	 * @param string $filterName
 	 * @return self
 	 */
-	public function setFilter($extension, $filterName) {
-		if (!isset($this->filters[$extension]) || !in_array($filterName, $this->filters[$extension])) {
+	public function setFilter(string $extension, string $filterName): self {
+		if (!isset($this->filters[$extension]) || !in_array($filterName, $this->filters[$extension], true)) {
 			$this->filters[$extension][] = $filterName;
 		}
 		return $this;
@@ -187,11 +177,13 @@ class Extractor {
 	/**
 	 * Add a filter object
 	 *
-	 * @param type $filterName
-	 * @param GettextExtractor_Filters_IFilter $filter
+	 * @param string $filterName
+	 * @param IFilter $filter
+	 * @return self
 	 */
-	public function addFilter($filterName, Filters\IFilter $filter) {
+	public function addFilter(string $filterName, IFilter $filter): self {
 		$this->filterStore[$filterName] = $filter;
+		return $this;
 	}
 
 	/**
@@ -199,7 +191,7 @@ class Extractor {
 	 *
 	 * @return self
 	 */
-	public function removeAllFilters() {
+	public function removeAllFilters(): self {
 		$this->filters = array();
 		return $this;
 	}
@@ -210,7 +202,7 @@ class Extractor {
 	 * @param string $value
 	 * @return self
 	 */
-	public function addComment($value) {
+	public function addComment(string $value): self {
 		$this->comments[] = $value;
 		return $this;
 	}
@@ -221,8 +213,8 @@ class Extractor {
 	 * @param string $key
 	 * @return string|null
 	 */
-	public function getMeta($key) {
-		return isset($this->meta[$key]) ? $this->meta[$key] : null;
+	public function getMeta(string $key): ?string {
+		return $this->meta[$key] ?? null;
 	}
 
 	/**
@@ -232,7 +224,7 @@ class Extractor {
 	 * @param string $value
 	 * @return self
 	 */
-	public function setMeta($key, $value) {
+	public function setMeta(string $key, string $value): self {
 		$this->meta[$key] = $value;
 		return $this;
 	}
@@ -244,8 +236,9 @@ class Extractor {
 	 * @param array $data
 	 * @return self
 	 */
-	public function save($outputFile, $data = null) {
+	public function save(string $outputFile, array $data = null): self {
 		file_put_contents($outputFile, $this->formatData($data ?: $this->data));
+		return $this;
 	}
 
 	/**
@@ -254,7 +247,7 @@ class Extractor {
 	 * @param array $data
 	 * @return string
 	 */
-	protected function formatData($data) {
+	private function formatData(array $data): string {
 		$output = array();
 		foreach ($this->comments as $comment) {
 			$output[] = '# '.$comment;
@@ -272,7 +265,7 @@ class Extractor {
 				$output[] = '#: '.$file[self::FILE].':'.$file[self::LINE];
 			}
 			if (isset($message[self::CONTEXT])) {
-				$output[] = $this->formatMessage($message[self::CONTEXT], "msgctxt");
+				$output[] = $this->formatMessage($message[self::CONTEXT], 'msgctxt');
 			}
 			$output[] = $this->formatMessage($message[self::SINGULAR], 'msgid');
 			if (isset($message[self::PLURAL])) {
@@ -286,10 +279,10 @@ class Extractor {
 			$output[] = '';
 		}
 
-		return join("\n", $output);
+		return implode("\n", $output);
 	}
 
-	protected function addMessages(array $messages, $file) {
+	private function addMessages(array $messages, string $file): void {
 		foreach ($messages as $message) {
 			$key = '';
 			if (isset($message[self::CONTEXT])) {
@@ -317,7 +310,7 @@ class Extractor {
 		}
 	}
 
-	protected function formatMessage($message, $prefix = null) {
+	private function formatMessage(string $message, string $prefix = null): string {
 		$message = addcslashes($message, self::ESCAPE_CHARS);
 		$message = '"' . str_replace("\n", "\\n\"\n\"", $message) . '"';
 		return ($prefix ? $prefix.' ' : '') . $message;

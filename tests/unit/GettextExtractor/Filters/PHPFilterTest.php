@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Vodacek\GettextExtractor as GE;
 
@@ -12,12 +13,12 @@ class PHPFilterTest extends FilterTest {
 		$this->file = __DIR__ . '/../../data/default.php';
 	}
 
-	public function testNoValidMessages() {
+	public function testNoValidMessages(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/noMessages.php');
 		$this->assertSame(array(), $messages);
 	}
 
-	public function testNestedFunctions() {
+	public function testNestedFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/nestedFunctions.php');
 		$this->assertCount(5, $messages);
 
@@ -45,7 +46,7 @@ class PHPFilterTest extends FilterTest {
 		), $messages);
 	}
 
-	public function testConstantAsParameter() {
+	public function testConstantAsParameter(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/constantAsParameter.php');
 
 		$this->assertContains(array(
@@ -54,7 +55,7 @@ class PHPFilterTest extends FilterTest {
 		), $messages);
 	}
 
-	public function testMessageWithNewlines() {
+	public function testMessageWithNewlines(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/messageWithNewlines.php');
 
 		$this->assertContains(array(
@@ -63,7 +64,7 @@ class PHPFilterTest extends FilterTest {
 		), $messages);
 	}
 
-	public function testArrayAsParameter() {
+	public function testArrayAsParameter(): void {
 		$this->object->addFunction('addConfirmer', 3);
 		$messages = $this->object->extract(__DIR__ . '/../../data/arrayAsParameter.php');
 
@@ -73,7 +74,7 @@ class PHPFilterTest extends FilterTest {
 		), $messages);
 	}
 
-	public function testSingularAndPluralMessageFromOneParameter() {
+	public function testSingularAndPluralMessageFromOneParameter(): void {
 		$this->object->addFunction('plural', 1, 1);
 		$messages = $this->object->extract(__DIR__ . '/../../data/singularAndPluralMessageFromOneParameter.php');
 
@@ -87,7 +88,7 @@ class PHPFilterTest extends FilterTest {
 	/**
 	 * @group bug5
 	 */
-	public function testArrayWithTranslationsAsParameter() {
+	public function testArrayWithTranslationsAsParameter(): void {
 		$this->object->addFunction('addSelect', 3);
 		$messages = $this->object->extract(__DIR__ . '/../../data/arrayWithTranslationsAsParameter.php');
 
@@ -104,7 +105,7 @@ class PHPFilterTest extends FilterTest {
 	/**
 	 * @group bug3
 	 */
-	public function testMultipleMessagesFromSingleFunction() {
+	public function testMultipleMessagesFromSingleFunction(): void {
 		$this->object->addFunction('bar', 1);
 		$this->object->addFunction('bar', 2);
 		$messages = $this->object->extract(__DIR__ . '/../../data/multipleMessagesFromSingleFunction.php');
@@ -119,12 +120,12 @@ class PHPFilterTest extends FilterTest {
 		), $messages);
 	}
 
-	public function testCallable() {
+	public function testCallable(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/callable.php');
 		$this->assertEmpty($messages);
 	}
 
-	public function testStaticFunctions() {
+	public function testStaticFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/staticFunctions.php');
 
 		$this->assertContains(array(
@@ -136,7 +137,7 @@ class PHPFilterTest extends FilterTest {
 	/**
 	 * @group bug11
 	 */
-	public function testNoMessagesInArray() {
+	public function testNoMessagesInArray(): void {
 		$this->object->addFunction('translateArray');
 		$messages = $this->object->extract(__DIR__ . '/../../data/bug11.php');
 		$this->assertEmpty($messages);

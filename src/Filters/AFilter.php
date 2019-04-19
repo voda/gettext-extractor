@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2010 Ondřej Vodáček
  * @license New BSD License
@@ -23,7 +24,7 @@ abstract class AFilter {
 	 * @param $context int|null
 	 * @return self
 	 */
-	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
+	public function addFunction(string $functionName, int $singular = 1, int $plural = null, int $context = null): self {
 		if (!is_int($singular) || $singular <= 0) {
 			throw new InvalidArgumentException('Invalid argument type or value given for parameter $singular.');
 		}
@@ -52,7 +53,7 @@ abstract class AFilter {
 	 * @param $functionName
 	 * @return self
 	 */
-	public function removeFunction($functionName) {
+	public function removeFunction(string $functionName): self {
 		unset($this->functions[$functionName]);
 		return $this;
 	}
@@ -62,7 +63,7 @@ abstract class AFilter {
 	 *
 	 * @return self
 	 */
-	public function removeAllFunctions() {
+	public function removeAllFunctions(): self {
 		$this->functions = array();
 		return $this;
 	}

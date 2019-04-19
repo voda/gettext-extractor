@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Vodacek\GettextExtractor as GE;
 
@@ -11,12 +12,12 @@ class LatteFilterTest extends FilterTest {
 		$this->file = __DIR__ . '/../../data/default.latte';
 	}
 
-	public function testNoValidMessages() {
+	public function testNoValidMessages(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/noMessages.latte');
 		$this->assertSame(array(), $messages);
 	}
 
-	public function testConstantsArrayMethodsAndFunctions() {
+	public function testConstantsArrayMethodsAndFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/test.latte');
 		$this->assertCount(1, $messages);
 		$expected = array(
@@ -31,7 +32,7 @@ class LatteFilterTest extends FilterTest {
 	/**
 	 * @group bug6
 	 */
-	public function testExtractMultilineMessage() {
+	public function testExtractMultilineMessage(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/bug6.latte');
 
 		$this->assertContains(array(

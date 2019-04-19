@@ -1,17 +1,18 @@
 <?php
+declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
 
 abstract class FilterTest extends TestCase {
 
-	/** @var GE\Filters\AFilter */
+	/** @var GE\Filters\IFilter */
 	protected $object;
 
 	/** @var string */
 	protected $file;
 
-	public function testExtract() {
+	public function testExtract(): void {
 		$messages = $this->object->extract($this->file);
 
 		$this->assertIsArray($messages);

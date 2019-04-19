@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2009 Karel Klíma
  * @copyright Copyright (c) 2010 Ondřej Vodáček
@@ -24,14 +25,16 @@ class LatteFilter extends AFilter implements IFilter {
 		$this->addFunction('!_np', 2, 3, 1);
 	}
 
-	public function extract($file) {
+	public function extract(string $file): array {
 		$data = array();
 
 		$latteParser = new Latte\Parser();
 		$tokens = $latteParser->parse(file_get_contents($file));
 
 		$functions = array_keys($this->functions);
-		usort($functions, array(__CLASS__, 'functionNameComparator'));
+		usort($functions, static function(string $a, string $b) {
+			return strlen($b) <=> strlen($a);
+		});
 
 		$phpParser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
 		foreach ($tokens as $token) {
@@ -57,12 +60,7 @@ class LatteFilter extends AFilter implements IFilter {
 		return $data;
 	}
 
-	/**
-	 * @param array
-	 * @param PhpParser\Node\Expr\FuncCall $node
-	 * @return array
-	 */
-	private function processFunction(array $definition, PhpParser\Node\Expr\FuncCall $node) {
+	private function processFunction(array $definition, PhpParser\Node\Expr\FuncCall $node): array {
 		$message = [];
 		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
@@ -78,36 +76,17 @@ class LatteFilter extends AFilter implements IFilter {
 		return $message;
 	}
 
-	/**
-	 * @param string
-	 * @param array
-	 * @return string|null
-	 */
-	private function findMacroName($text, array $functions) {
+	private function findMacroName(string $text, array $functions): ?string {
 		foreach ($functions as $function) {
 			if (strpos($text, '{'.$function) === 0) {
 				return $function;
 			}
 		}
+		return null;
 	}
 
-	/**
-	 * @param string
-	 * @param string
-	 * @return string
-	 */
-	private function trimMacroValue($name, $value) {
+	private function trimMacroValue(string $name, string $value): string {
 		$offset = strlen(ltrim($name, '!_'));
 		return substr($value, $offset);
-	}
-
-	/**
-	 * @param string $a
-	 * @param string $b
-	 * @return integer
-	 * @internal
-	 */
-	public static function functionNameComparator($a, $b) {
-		return strlen($b) - strlen($a);
 	}
 }

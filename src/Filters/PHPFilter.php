@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2012 Ondřej Vodáček
  * @license New BSD License
@@ -25,7 +26,7 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		$this->addFunction('_np', 2, 3, 1);
 	}
 
-	public function extract($file) {
+	public function extract(string $file): array {
 		$this->data = array();
 		$parser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
 		$stmts = $parser->parse(file_get_contents($file));
@@ -90,7 +91,7 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		}
 	}
 
-	/*** PhpParser\NodeVisitor: dont need these *******************************/
+	/* PhpParser\NodeVisitor: dont need these *******************************/
 
 	public function afterTraverse(array $nodes) {
 	}
