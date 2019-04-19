@@ -9,6 +9,7 @@ namespace Vodacek\GettextExtractor\Filters;
 
 use Vodacek\GettextExtractor\Extractor;
 use PhpParser;
+use Latte;
 
 class LatteFilter extends AFilter implements IFilter {
 
@@ -26,7 +27,7 @@ class LatteFilter extends AFilter implements IFilter {
 	public function extract($file) {
 		$data = array();
 
-		$latteParser = new \Latte\Parser();
+		$latteParser = new Latte\Parser();
 		$tokens = $latteParser->parse(file_get_contents($file));
 
 		$functions = array_keys($this->functions);
@@ -34,7 +35,7 @@ class LatteFilter extends AFilter implements IFilter {
 
 		$phpParser = new PhpParser\Parser(new PHPParser\Lexer());
 		foreach ($tokens as $token) {
-			if ($token->type !== \Latte\Token::MACRO_TAG) {
+			if ($token->type !== Latte\Token::MACRO_TAG) {
 				continue;
 			}
 
