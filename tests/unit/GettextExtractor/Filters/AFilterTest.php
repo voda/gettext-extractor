@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+namespace Vodacek\GettextExtractor\Tests\Integration;
+
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
 

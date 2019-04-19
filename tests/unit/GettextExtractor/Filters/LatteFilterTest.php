@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Vodacek\GettextExtractor as GE;
+namespace Vodacek\GettextExtractor\Tests\Integration;
 
-require_once __DIR__ . '/FilterTest.php';
+use Vodacek\GettextExtractor as GE;
 
 class LatteFilterTest extends FilterTest {
 

@@ -15,6 +15,12 @@
 	"autoload": {
 		"psr-4": {"Vodacek\\GettextExtractor\\" : "src"}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"Vodacek\\GettextExtractor\\Tests\\Unit\\": "tests/unit",
+			"Vodacek\\GettextExtractor\\Tests\\Integration\\": "tests/integration"
+		}
+	},
 	"bin": [
 		"gettext-extractor.php"
 	],

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace Vodacek\GettextExtractor\Tests\Integration;
+
 use Vodacek\GettextExtractor as GE;
 
 require_once __DIR__ . '/FilterTest.php';
