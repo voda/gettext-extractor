@@ -34,7 +34,7 @@ class PHPFilterTest extends FilterTest {
 		$this->assertContains(array(
 			GE\Extractor::LINE => 6,
 			GE\Extractor::SINGULAR => "%d meeting wasn't imported.",
-			GE\Extractor::PLURAL => "%d meetings weren't importeded."
+			GE\Extractor::PLURAL => "%d meetings weren't imported."
 		), $messages);
 		$this->assertContains(array(
 			GE\Extractor::LINE => 8,
