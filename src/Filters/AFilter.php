@@ -6,6 +6,7 @@
 
 namespace Vodacek\GettextExtractor\Filters;
 
+use InvalidArgumentException;
 use Vodacek\GettextExtractor\Extractor;
 
 abstract class AFilter {
@@ -24,20 +25,20 @@ abstract class AFilter {
 	 */
 	public function addFunction($functionName, $singular = 1, $plural = null, $context = null) {
 		if (!is_int($singular) || $singular <= 0) {
-			throw new \InvalidArgumentException('Invalid argument type or value given for paramater $singular.');
+			throw new InvalidArgumentException('Invalid argument type or value given for parameter $singular.');
 		}
 		$function = array(
 			Extractor::SINGULAR => $singular
 		);
 		if ($plural !== null) {
 			if (!is_int($plural) || $plural <= 0) {
-				throw new \InvalidArgumentException('Invalid argument type or value given for paramater $plural.');
+				throw new InvalidArgumentException('Invalid argument type or value given for parameter $plural.');
 			}
 			$function[Extractor::PLURAL] = $plural;
 		}
 		if ($context !== null) {
 			if (!is_int($context) || $context <= 0) {
-				throw new \InvalidArgumentException('Invalid argument type or value given for paramater $context.');
+				throw new InvalidArgumentException('Invalid argument type or value given for parameter $context.');
 			}
 			$function[Extractor::CONTEXT] = $context;
 		}
