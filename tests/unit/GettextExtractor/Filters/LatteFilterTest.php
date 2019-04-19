@@ -6,7 +6,7 @@ require_once __DIR__ . '/FilterTest.php';
 
 class LatteFilterTest extends FilterTest {
 
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->object = new GE\Filters\LatteFilter();
 		$this->file = __DIR__ . '/../../data/default.latte';
 	}

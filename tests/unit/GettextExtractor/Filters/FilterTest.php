@@ -1,10 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
 
-abstract class FilterTest extends PHPUnit_Framework_TestCase {
+abstract class FilterTest extends TestCase {
 
-	/** @var AFilter */
+	/** @var GE\Filters\AFilter */
 	protected $object;
 
 	/** @var string */
@@ -13,7 +14,7 @@ abstract class FilterTest extends PHPUnit_Framework_TestCase {
 	public function testExtract() {
 		$messages = $this->object->extract($this->file);
 
-		$this->assertInternalType('array', $messages);
+		$this->assertIsArray($messages);
 
 		$this->assertContains(array(
 			GE\Extractor::LINE => 2,

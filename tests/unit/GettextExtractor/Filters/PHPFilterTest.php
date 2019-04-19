@@ -6,7 +6,7 @@ require_once __DIR__ . '/FilterTest.php';
 
 class PHPFilterTest extends FilterTest {
 
-	protected function setUp() {
+	protected function setUp(): void {
 		$this->object = new GE\Filters\PHPFilter();
 		$this->object->addFunction('addRule', 2);
 		$this->file = __DIR__ . '/../../data/default.php';
