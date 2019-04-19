@@ -90,7 +90,7 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		}
 	}
 
-	/*** PHPParser_NodeVisitor: dont need these *******************************/
+	/*** PhpParser\NodeVisitor: dont need these *******************************/
 
 	public function afterTraverse(array $nodes) {
 	}

@@ -33,7 +33,7 @@ class LatteFilter extends AFilter implements IFilter {
 		$functions = array_keys($this->functions);
 		usort($functions, array(__CLASS__, 'functionNameComparator'));
 
-		$phpParser = new PhpParser\Parser(new PHPParser\Lexer());
+		$phpParser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
 		foreach ($tokens as $token) {
 			if ($token->type !== Latte\Token::MACRO_TAG) {
 				continue;
@@ -47,7 +47,7 @@ class LatteFilter extends AFilter implements IFilter {
 			$stmts = $phpParser->parse("<?php\nf($value);");
 
 			foreach ($this->functions[$name] as $definition) {
-				$message = $this->processFunction($definition, $stmts[0]);
+				$message = $this->processFunction($definition, $stmts[0]->expr);
 				if ($message) {
 					$message[Extractor::LINE] = $token->line;
 					$data[] = $message;
@@ -63,15 +63,16 @@ class LatteFilter extends AFilter implements IFilter {
 	 * @return array
 	 */
 	private function processFunction(array $definition, PhpParser\Node\Expr\FuncCall $node) {
+		$message = [];
 		foreach ($definition as $type => $position) {
 			if (!isset($node->args[$position - 1])) {
-				return;
+				return [];
 			}
 			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof PhpParser\Node\Scalar\String) {
+			if ($arg instanceof PhpParser\Node\Scalar\String_) {
 				$message[$type] = $arg->value;
 			} else {
-				return;
+				return [];
 			}
 		}
 		return $message;
