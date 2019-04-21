@@ -18,10 +18,10 @@ abstract class AFilter {
 	/**
 	 * Includes a function to parse gettext phrases from
 	 *
-	 * @param $functionName string
-	 * @param $singular int
-	 * @param $plural int|null
-	 * @param $context int|null
+	 * @param string $functionName
+	 * @param int $singular
+	 * @param int|null $plural
+	 * @param int|null $context
 	 * @return self
 	 */
 	public function addFunction(string $functionName, int $singular = 1, int $plural = null, int $context = null): self {
@@ -50,7 +50,7 @@ abstract class AFilter {
 	/**
 	 * Excludes a function from the function list
 	 *
-	 * @param $functionName
+	 * @param string $functionName
 	 * @return self
 	 */
 	public function removeFunction(string $functionName): self {
