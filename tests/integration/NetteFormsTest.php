@@ -20,7 +20,11 @@ class NetteFormsTest extends TestCase {
 		$this->object->setupForms();
 		$this->object->scan('tests/integration/data/form.php');
 		$temp = tempnam(sys_get_temp_dir(), __CLASS__);
+		if ($temp === false) {
+			throw new \RuntimeException('Failed to create temporary file.');
+		}
 		$this->object->save($temp);
 		$this->assertFileEquals(__DIR__.'/data/form.pot', $temp);
+		unlink($temp);
 	}
 }
