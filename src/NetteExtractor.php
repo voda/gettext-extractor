@@ -13,10 +13,7 @@ use Vodacek\GettextExtractor\Filters\PHPFilter;
 
 class NetteExtractor extends Extractor {
 
-	/**
-	 * @param string|bool $logToFile
-	 */
-	public function __construct($logToFile = false) {
+	public function __construct(string $logToFile = 'php://stderr') {
 		parent::__construct($logToFile);
 
 		// Clean up...
