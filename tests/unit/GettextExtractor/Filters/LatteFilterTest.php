@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Vodacek\GettextExtractor\Tests\Integration;
+namespace Vodacek\GettextExtractor\Tests\Unit\GettextExtractor\Filters;
 
 use Vodacek\GettextExtractor as GE;
 
