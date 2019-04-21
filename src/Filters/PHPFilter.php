@@ -58,10 +58,10 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 			$name = array_pop($parts);
 			$args = $node->args;
 		} else {
-			return;
+			return null;
 		}
 		if (!isset($this->functions[$name])) {
-			return;
+			return null;
 		}
 		foreach ($this->functions[$name] as $definition) {
 			$this->processFunction($definition, $node, $args);
