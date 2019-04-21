@@ -1,0 +1,13 @@
+parameters:
+	level: 7
+	paths:
+		- src
+		- tests
+#		- gettext-extractor.php
+	excludes_analyse:
+		- tests/integration/data
+		- tests/unit/data
+
+includes:
+	- vendor/phpstan/phpstan-phpunit/extension.neon
+	- vendor/phpstan/phpstan-phpunit/rules.neon
