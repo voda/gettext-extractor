@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Vodacek\GettextExtractor\Filters;
 
+use Nette\Utils\FileSystem;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
@@ -32,7 +33,7 @@ class LatteFilter extends AFilter implements IFilter {
 		$data = array();
 
 		$latteParser = new Latte\Parser();
-		$tokens = $latteParser->parse(file_get_contents($file));
+		$tokens = $latteParser->parse(FileSystem::read($file));
 
 		$functions = array_keys($this->functions);
 		usort($functions, static function(string $a, string $b) {

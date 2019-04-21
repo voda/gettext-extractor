@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Vodacek\GettextExtractor;
 
+use Nette\Utils\FileSystem;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -237,7 +238,7 @@ class Extractor {
 	 * @return self
 	 */
 	public function save(string $outputFile, array $data = null): self {
-		file_put_contents($outputFile, $this->formatData($data ?: $this->data));
+		FileSystem::write($outputFile, $this->formatData($data ?: $this->data));
 		return $this;
 	}
 

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Vodacek\GettextExtractor\Filters;
 
+use Nette\Utils\FileSystem;
 use PhpParser;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -38,7 +39,10 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 	public function extract(string $file): array {
 		$this->data = array();
 		$parser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
-		$stmts = $parser->parse(file_get_contents($file));
+		$stmts = $parser->parse(FileSystem::read($file));
+		if ($stmts === null) {
+			return [];
+		}
 		$traverser = new PhpParser\NodeTraverser();
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
