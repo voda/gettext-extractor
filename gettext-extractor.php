@@ -75,9 +75,9 @@ if (isset($options['k'])) {
 		$keywords[] = array(
 			'filter' => $filter,
 			'function' => $function,
-			'singular' => isset($params[0]) ? $params[0] : null,
-			'plural' => isset($params[1]) ? $params[1] : null,
-			'context' => isset($params[2]) ? $params[2] : null
+			'singular' => isset($params[0]) ? (int) $params[0] : null,
+			'plural' => isset($params[1]) ? (int) $params[1] : null,
+			'context' => isset($params[2]) ? (int) $params[2] : null
 		);
 	}
 }
