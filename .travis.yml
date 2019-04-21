@@ -2,5 +2,8 @@ language: php
 php:
   - 7.3
   - 7.2
-before_script:
+install:
   - composer install --no-interaction --prefer-dist
+script:
+  - ./vendor/bin/phpunit
+  - ./vendor/bin/phpstan analyse

@@ -7,13 +7,23 @@ declare(strict_types=1);
 
 namespace Vodacek\GettextExtractor\Filters;
 
+use Nette\Utils\FileSystem;
 use PhpParser;
+use PhpParser\Node;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\String_;
 use Vodacek\GettextExtractor\Extractor;
 
 class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
 	/** @var array */
-	private $data;
+	private $data = [];
 
 	public function __construct() {
 		$this->addFunction('gettext', 1);
@@ -29,47 +39,58 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 	public function extract(string $file): array {
 		$this->data = array();
 		$parser = (new PhpParser\ParserFactory())->create(PhpParser\ParserFactory::PREFER_PHP7);
-		$stmts = $parser->parse(file_get_contents($file));
+		$stmts = $parser->parse(FileSystem::read($file));
+		if ($stmts === null) {
+			return [];
+		}
 		$traverser = new PhpParser\NodeTraverser();
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
 		$data = $this->data;
-		$this->data = null;
+		$this->data = [];
 		return $data;
 	}
 
-	public function enterNode(PhpParser\Node $node) {
+	public function enterNode(Node $node) {
 		$name = null;
-		if (($node instanceof PhpParser\Node\Expr\MethodCall || $node instanceof PhpParser\Node\Expr\StaticCall) && $node->name instanceof PhpParser\Node\Identifier && is_string($node->name->name)) {
+		$args = [];
+		if (($node instanceof MethodCall || $node instanceof StaticCall) && $node->name instanceof Identifier && is_string($node->name->name)) {
 			$name = $node->name->name;
-		} elseif ($node instanceof PhpParser\Node\Expr\FuncCall && $node->name instanceof PhpParser\Node\Name) {
+			$args = $node->args;
+		} elseif ($node instanceof FuncCall && $node->name instanceof Name) {
 			$parts = $node->name->parts;
 			$name = array_pop($parts);
+			$args = $node->args;
 		} else {
-			return;
+			return null;
 		}
 		if (!isset($this->functions[$name])) {
-			return;
+			return null;
 		}
 		foreach ($this->functions[$name] as $definition) {
-			$this->processFunction($definition, $node);
+			$this->processFunction($definition, $node, $args);
 		}
 	}
 
-	private function processFunction(array $definition, PhpParser\Node $node) {
+	/**
+	 * @param array $definition
+	 * @param Node $node
+	 * @param Arg[] $args
+	 */
+	private function processFunction(array $definition, Node $node, array $args) {
 		$message = array(
 			Extractor::LINE => $node->getLine()
 		);
 		foreach ($definition as $type => $position) {
-			if (!isset($node->args[$position - 1])) {
+			if (!isset($args[$position - 1])) {
 				return;
 			}
-			$arg = $node->args[$position - 1]->value;
-			if ($arg instanceof PhpParser\Node\Scalar\String_) {
+			$arg = $args[$position - 1]->value;
+			if ($arg instanceof String_) {
 				$message[$type] = $arg->value;
-			} elseif ($arg instanceof PhpParser\Node\Expr\Array_) {
+			} elseif ($arg instanceof Array_) {
 				foreach ($arg->items as $item) {
-					if ($item->value instanceof PhpParser\Node\Scalar\String_) {
+					if ($item->value instanceof String_) {
 						$message[$type][] = $item->value->value;
 					}
 				}
@@ -99,6 +120,6 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 	public function beforeTraverse(array $nodes) {
 	}
 
-	public function leaveNode(PhpParser\Node $node) {
+	public function leaveNode(Node $node) {
 	}
 }

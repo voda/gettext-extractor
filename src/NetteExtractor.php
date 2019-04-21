@@ -8,12 +8,12 @@ declare(strict_types=1);
 
 namespace Vodacek\GettextExtractor;
 
+use Vodacek\GettextExtractor\Filters\LatteFilter;
+use Vodacek\GettextExtractor\Filters\PHPFilter;
+
 class NetteExtractor extends Extractor {
 
-	/**
-	 * @param string|bool $logToFile
-	 */
-	public function __construct($logToFile = false) {
+	public function __construct(string $logToFile = 'php://stderr') {
 		parent::__construct($logToFile);
 
 		// Clean up...
@@ -28,11 +28,15 @@ class NetteExtractor extends Extractor {
 
 		$this->addFilter('Latte', new Filters\LatteFilter());
 
-		$this->getFilter('PHP')
-				->addFunction('translate');
+		$phpFilter = $this->getFilter('PHP');
+		assert($phpFilter instanceof PHPFilter);
 
-		$this->getFilter('Latte')
-				->addFunction('!_')
+		$phpFilter->addFunction('translate');
+
+		$latteFilter = $this->getFilter('Latte');
+		assert($latteFilter instanceof LatteFilter);
+
+		$latteFilter->addFunction('!_')
 				->addFunction('_');
 	}
 
@@ -43,6 +47,8 @@ class NetteExtractor extends Extractor {
 	 */
 	public function setupForms(): self {
 		$php = $this->getFilter('PHP');
+		assert($php instanceof PHPFilter);
+
 		$php->addFunction('setText')
 				->addFunction('setEmptyValue')
 				->addFunction('setValue')
@@ -80,6 +86,8 @@ class NetteExtractor extends Extractor {
 	 */
 	public function setupDataGrid(): self {
 		$php = $this->getFilter('PHP');
+		assert($php instanceof PHPFilter);
+
 		$php->addFunction('addColumn', 2)
 				->addFunction('addNumericColumn', 2)
 				->addFunction('addDateColumn', 2)

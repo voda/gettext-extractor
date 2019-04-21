@@ -1,18 +1,49 @@
 <?php
 declare(strict_types=1);
 
-namespace Vodacek\GettextExtractor\Tests\Integration;
+namespace Vodacek\GettextExtractor\Tests\Unit\GettextExtractor\Filters;
 
+use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
 
-require_once __DIR__ . '/FilterTest.php';
+class PHPFilterTest extends TestCase {
 
-class PHPFilterTest extends FilterTest {
+	/** @var GE\Filters\PHPFilter */
+	private $object;
 
 	protected function setUp(): void {
 		$this->object = new GE\Filters\PHPFilter();
 		$this->object->addFunction('addRule', 2);
-		$this->file = __DIR__ . '/../../data/php/default.php';
+	}
+
+	public function testExtract(): void {
+		$messages = $this->object->extract(__DIR__ . '/../../data/php/default.php');
+
+		$this->assertIsArray($messages);
+
+		$this->assertContains(array(
+			GE\Extractor::LINE => 2,
+			GE\Extractor::SINGULAR => 'A message!'
+		), $messages);
+
+		$this->assertContains(array(
+			GE\Extractor::LINE => 3,
+			GE\Extractor::SINGULAR => 'Another message!',
+			GE\Extractor::CONTEXT => 'context'
+		), $messages);
+
+		$this->assertContains(array(
+			GE\Extractor::LINE => 4,
+			GE\Extractor::SINGULAR => 'I see %d little indian!',
+			GE\Extractor::PLURAL => 'I see %d little indians!'
+		), $messages);
+
+		$this->assertContains(array(
+			GE\Extractor::LINE => 5,
+			GE\Extractor::SINGULAR => 'I see %d little indian!',
+			GE\Extractor::PLURAL => 'I see %d little indians!',
+			GE\Extractor::CONTEXT => 'context'
+		), $messages);
 	}
 
 	public function testNoValidMessages(): void {
