@@ -22,7 +22,7 @@ use Vodacek\GettextExtractor\Extractor;
 class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 
 	/** @var array */
-	private $data;
+	private $data = [];
 
 	public function __construct() {
 		$this->addFunction('gettext', 1);
@@ -43,7 +43,7 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		$traverser->addVisitor($this);
 		$traverser->traverse($stmts);
 		$data = $this->data;
-		$this->data = null;
+		$this->data = [];
 		return $data;
 	}
 
