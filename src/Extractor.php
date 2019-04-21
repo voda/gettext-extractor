@@ -84,7 +84,7 @@ class Extractor {
 	/**
 	 * Scans given files or directories and extracts gettext keys from the content
 	 *
-	 * @param string|array $resource
+	 * @param string|string[] $resource
 	 * @return self
 	 */
 	public function scan($resource): self {
