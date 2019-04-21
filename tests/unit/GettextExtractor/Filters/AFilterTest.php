@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace Vodacek\GettextExtractor\Tests\Unit\GettextExtractor\Filters;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor as GE;
 
 class AFilterTest extends TestCase {
 
-	/** @var GE\Filters\AFilter */
+	/** @var MockObject&GE\Filters\AFilter */
 	protected $object;
 
 	protected function setUp(): void {
