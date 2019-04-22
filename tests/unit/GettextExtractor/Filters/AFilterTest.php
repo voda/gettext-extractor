@@ -20,7 +20,7 @@ class AFilterTest extends TestCase {
 	/**
 	 * @dataProvider dataProvider_AddingFunctionWithInvalidParameter
 	 */
-	public function testAddingFunctionWithInvalidParameter($s, $p, $c): void {
+	public function testAddingFunctionWithInvalidParameter(int $s, ?int $p, ?int $c): void {
 		$this->expectException(InvalidArgumentException::class);
 		$this->object->addFunction('function', $s, $p, $c);
 	}

@@ -24,7 +24,7 @@ class NetteFormsTest extends TestCase {
 			throw new \RuntimeException('Failed to create temporary file.');
 		}
 		$this->object->save($temp);
-		$this->assertFileEquals(__DIR__.'/data/form.pot', $temp);
+		self::assertFileEquals(__DIR__.'/data/form.pot', $temp);
 		unlink($temp);
 	}
 }
