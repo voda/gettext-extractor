@@ -1,21 +1,22 @@
 GettextExtractor
 ================
-Cool tool for extracting gettext phrases from PHP files and templates.
+Tool for extracting gettext phrases from PHP files and Latte templates. Output is generated as a .pot file.
 
-Dependencies
+[![Build Status](https://travis-ci.org/voda/gettext-extractor.svg?branch=master)](https://travis-ci.org/voda/gettext-extractor)
+[![Latest Stable Version](https://poser.pugx.org/voda/gettext-extractor/v/stable)](https://packagist.org/packages/voda/gettext-extractor)
+[![Total Downloads](https://poser.pugx.org/voda/gettext-extractor/downloads)](https://packagist.org/packages/voda/gettext-extractor)
+[![License](https://poser.pugx.org/voda/gettext-extractor/license)](https://packagist.org/packages/voda/gettext-extractor)
+
+Installation
 ------------
-* [nikic/PHP-Parser](https://github.com/nikic/PHP-Parser/)
-* [latte](https://github.com/nette/latte/) - for .latte templates
+To install gettext-extractor install it with [composer](http://getcomposer.org/):
+`$ composer require --dev voda/gettext-extractor`
 
-Dependencies are installed with [composer](http://getcomposer.org/). You can use these commands:
-
-`$ curl -s http://getcomposer.org/installer | php`  
-`$ php composer.phar install`
-	
+Alternatively you can download a standalone PHAR file from [releases page](https://github.com/voda/gettext-extractor/releases).
 
 Usage
 -----
-`php gettext-extractor.php [options]`
+`./vendor/bin/gettext-extractor [options]`
 
 	Options:
 	  -h            display this help and exit
@@ -29,7 +30,7 @@ Usage
 	                can be specified several times
 	  -mKEY:VALUE   set meta header
 
-e.g.: `php gettext-extractor -o outup/file.pot -f files/to/extract/`
+e.g.: `./vendor/bin/gettext-extractor -o outup/file.pot -f files/to/extract/`
 
 Supported file types
 --------------------
@@ -40,7 +41,4 @@ License
 -------
 GettextExtractor is licensed under the New BSD License.
 
-Copyright
----------
-* 2009 Karel Klima
-* 2010 Ondřej Vodáček
+Based on code from [Karel Klíma](https://github.com/karelklima/gettext-extractor).
