@@ -47,7 +47,7 @@ class LatteFilter extends AFilter implements IFilter {
 			}
 
 			$name = $this->findMacroName($token->text, $functions);
-			if (!$name) {
+			if ($name === null) {
 				continue;
 			}
 			$value = $this->trimMacroValue($name, $token->value);
@@ -59,7 +59,7 @@ class LatteFilter extends AFilter implements IFilter {
 			if ($stmts[0] instanceof Expression && $stmts[0]->expr instanceof FuncCall) {
 				foreach ($this->functions[$name] as $definition) {
 					$message = $this->processFunction($definition, $stmts[0]->expr);
-					if ($message) {
+					if ($message !== []) {
 						$message[Extractor::LINE] = $token->line;
 						$data[] = $message;
 					}

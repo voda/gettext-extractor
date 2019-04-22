@@ -70,7 +70,7 @@ class Extractor {
 	 * @param string $message
 	 */
 	public function log(string $message): void {
-		if ($this->logFile) {
+		if ($this->logFile !== '') {
 			file_put_contents($this->logFile, "$message\n", FILE_APPEND);
 		}
 	}
@@ -314,6 +314,6 @@ class Extractor {
 	private function formatMessage(string $message, string $prefix = null): string {
 		$message = addcslashes($message, self::ESCAPE_CHARS);
 		$message = '"' . str_replace("\n", "\\n\"\n\"", $message) . '"';
-		return ($prefix ? $prefix.' ' : '') . $message;
+		return ($prefix !== null ? $prefix.' ' : '') . $message;
 	}
 }
