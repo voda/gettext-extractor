@@ -19,8 +19,6 @@ class PHPFilterTest extends TestCase {
 	public function testExtract(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/default.php');
 
-		self::assertIsArray($messages);
-
 		self::assertContains(array(
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'A message!'
