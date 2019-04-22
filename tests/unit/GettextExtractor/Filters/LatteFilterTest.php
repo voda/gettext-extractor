@@ -18,26 +18,26 @@ class LatteFilterTest extends TestCase {
 	public function testExtract(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/latte/default.latte');
 
-		$this->assertIsArray($messages);
+		self::assertIsArray($messages);
 
-		$this->assertContains(array(
+		self::assertContains(array(
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'A message!'
 		), $messages);
 
-		$this->assertContains(array(
+		self::assertContains(array(
 			GE\Extractor::LINE => 3,
 			GE\Extractor::SINGULAR => 'Another message!',
 			GE\Extractor::CONTEXT => 'context'
 		), $messages);
 
-		$this->assertContains(array(
+		self::assertContains(array(
 			GE\Extractor::LINE => 4,
 			GE\Extractor::SINGULAR => 'I see %d little indian!',
 			GE\Extractor::PLURAL => 'I see %d little indians!'
 		), $messages);
 
-		$this->assertContains(array(
+		self::assertContains(array(
 			GE\Extractor::LINE => 5,
 			GE\Extractor::SINGULAR => 'I see %d little indian!',
 			GE\Extractor::PLURAL => 'I see %d little indians!',
@@ -47,19 +47,19 @@ class LatteFilterTest extends TestCase {
 
 	public function testNoValidMessages(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/latte/noMessages.latte');
-		$this->assertSame(array(), $messages);
+		self::assertSame(array(), $messages);
 	}
 
 	public function testConstantsArrayMethodsAndFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/latte/test.latte');
-		$this->assertCount(1, $messages);
+		self::assertCount(1, $messages);
 		$expected = array(
 			GE\Extractor::LINE => 1,
 			GE\Extractor::SINGULAR => 'Message'
 		);
 		ksort($messages[0]);
 		ksort($expected);
-		$this->assertSame(array($expected), $messages);
+		self::assertSame(array($expected), $messages);
 	}
 
 	/**
@@ -68,7 +68,7 @@ class LatteFilterTest extends TestCase {
 	public function testExtractMultilineMessage(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/latte/bug6.latte');
 
-		$this->assertContains(array(
+		self::assertContains(array(
 			GE\Extractor::LINE => 1,
 			GE\Extractor::SINGULAR => "A\nmultiline\nmessage!"
 		), $messages);
