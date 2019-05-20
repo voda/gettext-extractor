@@ -95,7 +95,17 @@ class LatteFilter extends AFilter implements IFilter {
 	}
 
 	private function trimMacroValue(string $name, string $value): string {
-		$offset = strlen(ltrim($name, '!_'));
-		return substr($value, $offset);
+		if (strpos($name, '!') === 0) {
+			// exclamation mark is never removed
+			return trim(substr($value, strlen($name)));
+		}
+
+		if (strpos($name, '_') === 0) {
+			// only underscore is removed
+			$offset = strlen(ltrim($name, '_'));
+			return substr($value, $offset);
+		}
+
+		return $value;
 	}
 }

@@ -3,3 +3,9 @@
 {_p'context', 'Another message!'}
 {_n'I see %d little indian!', 'I see %d little indians!', 3|printf:3}
 {_np'context', 'I see %d little indian!', 'I see %d little indians!', $number |printf:$number}
+
+{* Nette 0.9 noescape format *}
+{!_'A message!'}
+{!_p'context', 'Another message!'}
+{!_n'I see %d little indian!', 'I see %d little indians!', 3|printf:3}
+{!_np'context', 'I see %d little indian!', 'I see %d little indians!', $number |printf:$number}

@@ -41,6 +41,47 @@ class LatteFilterTest extends TestCase {
 			GE\Extractor::PLURAL => 'I see %d little indians!',
 			GE\Extractor::CONTEXT => 'context'
 		), $messages);
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 8,
+			GE\Extractor::SINGULAR => 'A message!'
+		), $messages);
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 9,
+			GE\Extractor::SINGULAR => 'Another message!',
+			GE\Extractor::CONTEXT => 'context'
+		), $messages);
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 10,
+			GE\Extractor::SINGULAR => 'I see %d little indian!',
+			GE\Extractor::PLURAL => 'I see %d little indians!'
+		), $messages);
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 11,
+			GE\Extractor::SINGULAR => 'I see %d little indian!',
+			GE\Extractor::PLURAL => 'I see %d little indians!',
+			GE\Extractor::CONTEXT => 'context'
+		), $messages);
+	}
+
+	public function testCustomMacros(): void {
+		$this->object->addFunction('custom', 1);
+		$this->object->addFunction('!custom', 1);
+
+		$messages = $this->object->extract(__DIR__ . '/../../data/latte/custom.latte');
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 1,
+			GE\Extractor::SINGULAR => 'A custom message!'
+		), $messages);
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 2,
+			GE\Extractor::SINGULAR => 'An unescaped custom message!'
+		), $messages);
 	}
 
 	public function testNoValidMessages(): void {
