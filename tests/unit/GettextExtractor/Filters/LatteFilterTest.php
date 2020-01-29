@@ -112,4 +112,13 @@ class LatteFilterTest extends TestCase {
 			GE\Extractor::SINGULAR => "A\nmultiline\nmessage!"
 		), $messages);
 	}
+
+	public function testBackslashCharacter(): void {
+		$messages = $this->object->extract(__DIR__ . '/../../data/latte/backslash.latte');
+
+		self::assertContains(array(
+			GE\Extractor::LINE => 1,
+			GE\Extractor::SINGULAR => "Message with backslash (\\) character."
+		), $messages);
+	}
 }

@@ -16,7 +16,7 @@ use Vodacek\GettextExtractor\Filters\IFilter;
 
 class Extractor {
 
-	private const ESCAPE_CHARS = '"';
+	private const ESCAPE_CHARS = '"\\';
 
 	public const CONTEXT = 'context';
 	public const SINGULAR = 'singular';

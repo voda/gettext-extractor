@@ -1,0 +1,17 @@
+# Gettext keys exported by GettextExtractor
+#, fuzzy
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2020-01-29T17:22:02+01:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: tests/unit/data/latte/backslash.latte:1
+#: tests/unit/data/latte/backslash.latte:1
+msgid "Message with backslash (\\) character."
+msgstr ""
