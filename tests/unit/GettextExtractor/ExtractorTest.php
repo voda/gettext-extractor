@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Vodacek\GettextExtractor\Tests;
+namespace Vodacek\GettextExtractor\Tests\Unit\GettextExtractor;
 
 use PHPUnit\Framework\TestCase;
 use Vodacek\GettextExtractor\NetteExtractor;
