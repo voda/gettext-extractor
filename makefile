@@ -5,3 +5,7 @@ test:
 
 phpstan:
 	./vendor/bin/phpstan analyse
+
+build:
+	box compile
+
