@@ -6,21 +6,21 @@ $form->addPassword('password', "Password label");
 $form->addTextArea('textarea', "Textarea label");
 $form->addUpload('upload', "Upload label");
 $form->addCheckbox('checkbox', "Checkbox label");
-$form->addRadioList('radio', "Radio label", array(
+$form->addRadioList('radio', "Radio label", [
 	"1. radio item",
 	"2. radio item",
 	"3. radio item",
-));
-$form->addSelect('select', "Select label", array(
+]);
+$form->addSelect('select', "Select label", [
 	"1. select item",
 	"2. select item",
 	"3. select item",
-));
-$form->addMultiSelect('multiselect', "MultiSelect label", array(
+]);
+$form->addMultiSelect('multiselect', "MultiSelect label", [
 	"1. multi-select item",
 	"2. multi-select item",
 	"3. multi-select item",
-));
+]);
 $form->addSubmit('submit', "Submit label");
 $form->addButton('button', "Button label");
 $form->addImage('image', '/path/to/file', "Image alt");

@@ -26,11 +26,11 @@ class AFilterTest extends TestCase {
 	}
 
 	public static function dataProvider_AddingFunctionWithInvalidParameter(): array {
-		return array(
-			array(0, null, null),
-			array(1, 0, null),
-			array(1, 2, 0),
-			array(-2, null, null)
-		);
+		return [
+			[0, null, null],
+			[1, 0, null],
+			[1, 2, 0],
+			[-2, null, null]
+		];
 	}
 }

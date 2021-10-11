@@ -1,5 +1,5 @@
 <?php
-$form->addSelect('name', 'label', array(
+$form->addSelect('name', 'label', [
 	'item 1',
 	'item 2'
-));
+]);

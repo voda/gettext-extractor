@@ -1,5 +1,5 @@
 <?php
-translateArray(array(
+translateArray([
 	$foo,
 	$bar
-));
+]);

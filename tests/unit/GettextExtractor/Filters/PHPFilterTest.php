@@ -19,80 +19,80 @@ class PHPFilterTest extends TestCase {
 	public function testExtract(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/default.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'A message!'
-		), $messages);
+		], $messages);
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 3,
 			GE\Extractor::SINGULAR => 'Another message!',
 			GE\Extractor::CONTEXT => 'context'
-		), $messages);
+		], $messages);
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 4,
 			GE\Extractor::SINGULAR => 'I see %d little indian!',
 			GE\Extractor::PLURAL => 'I see %d little indians!'
-		), $messages);
+		], $messages);
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 5,
 			GE\Extractor::SINGULAR => 'I see %d little indian!',
 			GE\Extractor::PLURAL => 'I see %d little indians!',
 			GE\Extractor::CONTEXT => 'context'
-		), $messages);
+		], $messages);
 	}
 
 	public function testNoValidMessages(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/noMessages.php');
-		self::assertSame(array(), $messages);
+		self::assertSame([], $messages);
 	}
 
 	public function testNestedFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/nestedFunctions.php');
 		self::assertCount(5, $messages);
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 4,
 			GE\Extractor::SINGULAR => 'Nested function.'
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 5,
 			GE\Extractor::SINGULAR => 'Nested function 2.',
 			GE\Extractor::CONTEXT => 'context'
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 6,
 			GE\Extractor::SINGULAR => "%d meeting wasn't imported.",
 			GE\Extractor::PLURAL => "%d meetings weren't imported."
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 8,
 			GE\Extractor::SINGULAR => 'Please provide a text 2.'
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 9,
 			GE\Extractor::SINGULAR => 'Please provide a text 3.'
-		), $messages);
+		], $messages);
 	}
 
 	public function testConstantAsParameter(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/constantAsParameter.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'Please provide a text.'
-		), $messages);
+		], $messages);
 	}
 
 	public function testMessageWithNewlines(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/messageWithNewlines.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => "A\nmessage!"
-		), $messages);
+		], $messages);
 	}
 
 	/** @dataProvider provideConcatenatedMessageFiles */
@@ -117,21 +117,21 @@ class PHPFilterTest extends TestCase {
 		$this->object->addFunction('addConfirmer', 3);
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/arrayAsParameter.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'Really delete?'
-		), $messages);
+		], $messages);
 	}
 
 	public function testSingularAndPluralMessageFromOneParameter(): void {
 		$this->object->addFunction('plural', 1, 1);
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/singularAndPluralMessageFromOneParameter.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => '%d weeks ago',
 			GE\Extractor::PLURAL => '%d weeks ago',
-		), $messages);
+		], $messages);
 	}
 
 	/**
@@ -141,14 +141,14 @@ class PHPFilterTest extends TestCase {
 		$this->object->addFunction('addSelect', 3);
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/arrayWithTranslationsAsParameter.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'item 1'
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'item 2'
-		), $messages);
+		], $messages);
 	}
 
 	/**
@@ -159,14 +159,14 @@ class PHPFilterTest extends TestCase {
 		$this->object->addFunction('bar', 2);
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/multipleMessagesFromSingleFunction.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'Value A'
-		), $messages);
-		self::assertContains(array(
+		], $messages);
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'Value B'
-		), $messages);
+		], $messages);
 	}
 
 	public function testCallable(): void {
@@ -177,10 +177,10 @@ class PHPFilterTest extends TestCase {
 	public function testStaticFunctions(): void {
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/staticFunctions.php');
 
-		self::assertContains(array(
+		self::assertContains([
 			GE\Extractor::LINE => 2,
 			GE\Extractor::SINGULAR => 'Static function'
-		), $messages);
+		], $messages);
 	}
 
 	/**

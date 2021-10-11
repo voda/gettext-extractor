@@ -1,2 +1,2 @@
 <?php
-$dialog->addConfirmer('delete', array($this, 'delete'), "Really delete?");
+$dialog->addConfirmer('delete', [$this, 'delete'], "Really delete?");
