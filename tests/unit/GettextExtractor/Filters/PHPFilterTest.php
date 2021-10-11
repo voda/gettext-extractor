@@ -95,6 +95,24 @@ class PHPFilterTest extends TestCase {
 		), $messages);
 	}
 
+	/** @dataProvider provideConcatenatedMessageFiles */
+	public function testConcatenatedMessage(string $phpFile): void {
+		$messages = $this->object->extract($phpFile);
+		self::assertContains(array(
+			GE\Extractor::LINE => 2,
+			GE\Extractor::SINGULAR => "A message!"
+		), $messages);
+	}
+
+	/** @return array<string, string[]> */
+	public function provideConcatenatedMessageFiles(): array {
+		return [
+			'String on one lines' => [__DIR__ . '/../../data/php/concatenatedMessageOneLine.php'],
+			'String on two lines' => [__DIR__ . '/../../data/php/concatenatedMessageTwoLines.php'],
+			'String on multiple lines with empty parts' => [__DIR__ . '/../../data/php/concatenatedMessageMultipleLines.php'],
+		];
+	}
+
 	public function testArrayAsParameter(): void {
 		$this->object->addFunction('addConfirmer', 3);
 		$messages = $this->object->extract(__DIR__ . '/../../data/php/arrayAsParameter.php');

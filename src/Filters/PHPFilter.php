@@ -97,6 +97,8 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 				if (count($message) === 1) { // line only
 					return;
 				}
+			} elseif ($arg instanceof Node\Expr\BinaryOp\Concat) {
+				$message[$type] = $this->processConcatenatedString($arg);
 			} else {
 				return;
 			}
@@ -110,6 +112,23 @@ class PHPFilter extends AFilter implements IFilter, PhpParser\NodeVisitor {
 		} else {
 			$this->data[] = $message;
 		}
+	}
+
+	private function processConcatenatedString(Node\Expr\BinaryOp\Concat $arg): string
+	{
+		$result = '';
+
+		if ($arg->left instanceof Node\Expr\BinaryOp\Concat) {
+			$result .= $this->processConcatenatedString($arg->left);
+		} elseif ($arg->left instanceof String_) {
+			$result .= $arg->left->value;
+		}
+
+		if ($arg->right instanceof String_) {
+			$result .= $arg->right->value;
+		}
+
+		return $result;
 	}
 
 	/* PhpParser\NodeVisitor: dont need these *******************************/
